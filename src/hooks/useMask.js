@@ -1,16 +1,15 @@
 import { useState } from 'react'
 
-
 export default function useMask(
-    mask,
-    maskCharacter = '#',
     initialValue = '',
+    mask,
+    maskCharacterOrDisplayMask,
 ) {
     const [ value, setValue ] = useState(initialValue)
-    const maskedValue = value?.length ? parseValue(value, mask, maskCharacter) : ''
-    const maskLength = convertMaskStringToArray(mask, maskCharacter).length
+    const maskedValue = parseValue(value, mask, maskCharacterOrDisplayMask)
+    const maskLength = convertMaskStringToArray(mask, maskCharacterOrDisplayMask).length
 
-    let placeholder = mask
+    let placeholder = maskedValue // assuming that value is ''
 
     function onKeyPress(e) {
         const { key } = e
@@ -33,7 +32,7 @@ export default function useMask(
     }
 
     return {
-        value: maskedValue,
+        value: value.length ? maskedValue : value, // don't render with value if they haven't entered anything
         placeholder,
 
         onChange,
@@ -48,23 +47,35 @@ function convertValueStringToNumberArray(value) {
         .split('') // convert value into character array
 }
 
-function convertMaskStringToArray(mask, maskCharacter) {
-    const maskRegex = new RegExp(`[^${maskCharacter}]`, 'g')
-
+function convertMaskStringToArray(mask) {
     return mask
-        .replace(maskRegex, '') // remove non mask characters
+        .replace(/[^#]/g, '') // remove non mask characters
         .split('') // convert value into character array
 }
 
 function parseValue(value, mask, maskCharacter) {
-    const maskCharacters = convertMaskStringToArray(mask, maskCharacter)
+    let maskCharacters = convertMaskStringToArray(mask)
     const valueCharacters = convertValueStringToNumberArray(value)
 
     // replace mask character with matching input character
     maskCharacters.forEach((_, charIndex) => maskCharacters[charIndex] = valueCharacters[charIndex] ?? maskCharacters[charIndex])
 
     // fit mask array back into mask, preserving spaces and special characters
-    const maskRegex = new RegExp(`${maskCharacter}`)
+    const maskedValue = maskCharacters.reduce((result, maskCharacter) => result.replace(/#/, maskCharacter), mask)
 
-    return maskCharacters.reduce((result, maskCharacter) => result.replace(maskRegex, maskCharacter), mask)
+    if (maskCharacter.length === 1) {
+        return maskedValue.replace(/#/g, maskCharacter)
+    } else if (maskCharacter.length > 1) {
+        maskCharacters = maskedValue.split('')
+
+        return maskCharacters.reduce((result, currentMaskCharacter, characterIndex) => {
+            if (currentMaskCharacter === '#') {
+                result[characterIndex] = maskCharacter[characterIndex] // replace placeholders with matching display mask character
+            }
+
+            return result
+        }, maskCharacters).join('')
+    }
+
+    return maskedValue // just use the mask as is
 }

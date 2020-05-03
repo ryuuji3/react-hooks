@@ -1,0 +1,7 @@
+.demo > .demo-input {
+    margin: 1em;
+}
+
+input, label {
+    display: block;
+}

@@ -1,11 +1,12 @@
 import useMask from '../hooks/useMask'
 import React from 'react'
 
-export default function DateDemo() {
-    const { value, placeholder, onKeyPress, onKeyDown, onChange, } = useMask(
+export default function DateDemo({ onChange }) {
+    const maskProps = useMask(
         '',
         '## - ## - ####',
         'DD - MM - YYYY',
+        onChange,
     )
 
     return (
@@ -14,11 +15,7 @@ export default function DateDemo() {
             <input
                 name="test"
                 type="text"
-                value={value}
-                placeholder={placeholder}
-                onChange={onChange}
-                onKeyPress={onKeyPress}
-                onKeyDown={onKeyDown}
+                {...maskProps}
             />
         </label>
     );

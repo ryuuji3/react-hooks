@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function useMask(
     initialValue = '',
     mask,
     maskCharacterOrDisplayMask,
+    onChange,
 ) {
     const [ value, setValue ] = useState(initialValue)
     const maskedValue = parseValue(value, mask, maskCharacterOrDisplayMask)
@@ -26,16 +27,18 @@ export default function useMask(
         }
     }
 
-    // Only needed so that React doesn't think we can't control the component
-    function onChange(e) {
-        e.preventDefault()
-    }
+    useEffect(() => {
+        onChange && onChange({
+            value,
+            maskedValue,
+        })
+    }, [ value, maskedValue, onChange ])
 
     return {
         value: value.length ? maskedValue : value, // don't render with value if they haven't entered anything
         placeholder,
 
-        onChange,
+        onChange: e => e.preventDefault(), // Do nothing
         onKeyPress,
         onKeyDown,
     }

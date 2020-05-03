@@ -1,11 +1,12 @@
 import useMask from '../hooks/useMask'
 import React from 'react'
 
-export default function TelephoneDemo() {
-    const { value, placeholder, onKeyPress, onKeyDown, onChange, } = useMask(
+export default function TelephoneDemo({ onChange }) {
+    const maskProps = useMask(
         '',
         '###-###-####',
         '#',
+        onChange,
     )
 
     return (
@@ -14,11 +15,7 @@ export default function TelephoneDemo() {
             <input
                 name="test"
                 type="tel"
-                value={value}
-                placeholder={placeholder}
-                onChange={onChange}
-                onKeyPress={onKeyPress}
-                onKeyDown={onKeyDown}
+                {...maskProps}
             />
         </label>
     );

@@ -13,7 +13,7 @@ Not available on npm yet.
 import useMask from 'react-use-mask'
 
 function TelephoneDemo() {
-    const { value, placeholder, onKeyPress, onKeyDown, onChange, } = useMask(
+    const maskProps = useMask(
         '',
         '###-###-####',
         '_', // renders mask like ___-___-____
@@ -25,18 +25,14 @@ function TelephoneDemo() {
             <input
                 name="test"
                 type="tel"
-                value={value}
-                placeholder={placeholder}
-                onChange={onChange}
-                onKeyPress={onKeyPress}
-                onKeyDown={onKeyDown}
+                {...maskProps}
             />
         </label>
     );
 }
 
 function DateDemo() {
-    const { value, placeholder, onKeyPress, onKeyDown, onChange, } = useMask(
+    const maskProps = useMask(
         '',
         '## - ## - ####',
         'DD - MM - YYYY', // Will render the mask exactly like this (ie. the displayed mask)
@@ -48,11 +44,7 @@ function DateDemo() {
             <input
                 name="test"
                 type="text"
-                value={value}
-                placeholder={placeholder}
-                onChange={onChange}
-                onKeyPress={onKeyPress}
-                onKeyDown={onKeyDown}
+                {...maskProps}
             />
         </label>
     );

@@ -8,9 +8,10 @@ import TelephoneDemo from './TelephoneDemo'
 describe('Given an input with a telephone mask', () => {
     let instance
     let input
+    let onChange = jest.fn()
 
     beforeEach(() => {
-        instance = render(<TelephoneDemo />)
+        instance = render(<TelephoneDemo onChange={onChange} />)
         input = instance.getByLabelText(/phone mask/i)
     })
 
@@ -27,6 +28,13 @@ describe('Given an input with a telephone mask', () => {
             expect(input).toHaveValue('613-###-####')
         })
 
+        it('should call onChange with raw value, and masked value', () => {
+            expect(onChange).toHaveBeenCalledWith({
+                value: '613',
+                maskedValue: '613-###-####'
+            })
+        })
+
         describe('When user enters the remaining numbers into the mask', () => {
             beforeEach(() => {
                 userEvent.type(input, '8888888')
@@ -34,6 +42,13 @@ describe('Given an input with a telephone mask', () => {
 
             it('should render the numbers into the mask in the input', () => {
                 expect(input).toHaveValue('613-888-8888')
+            })
+
+            it('should call onChange with raw value, and masked value', () => {
+                expect(onChange).toHaveBeenCalledWith({
+                    value: '6138888888',
+                    maskedValue: '613-888-8888'
+                })
             })
 
             describe('When the user hits backspace', () => {
@@ -45,6 +60,13 @@ describe('Given an input with a telephone mask', () => {
 
                 it('should render the mask without the last character', () => {
                     expect(input).toHaveValue('613-888-888#')
+                })
+
+                it('should call onChange with raw value, and masked value', () => {
+                    expect(onChange).toHaveBeenCalledWith({
+                        value: '613888888',
+                        maskedValue: '613-888-888#'
+                    })
                 })
             })
         })

@@ -64,8 +64,10 @@ function parseValue(value, mask, maskCharacter) {
     const maskedValue = maskCharacters.reduce((result, maskCharacter) => result.replace(/#/, maskCharacter), mask)
 
     if (maskCharacter.length === 1) {
-        return maskedValue.replace(/#/g, maskCharacter)
+        return maskedValue.replace(/#/g, maskCharacter) // single mask character replacement
     } else if (maskCharacter.length > 1) {
+        // assuming that the display mask matches the same format as the mask
+        // character differences must be substitutes for mask special characters like '#'
         maskCharacters = maskedValue.split('')
 
         return maskCharacters.reduce((result, currentMaskCharacter, characterIndex) => {
@@ -77,5 +79,5 @@ function parseValue(value, mask, maskCharacter) {
         }, maskCharacters).join('')
     }
 
-    return maskedValue // just use the mask as is
+    return maskedValue // just use the mask as is if no mask character or display mask was specified
 }

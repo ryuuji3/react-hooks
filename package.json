@@ -1,8 +1,21 @@
 {
-  "name": "react-use-mask",
+  "name": "react-mask-hook",
+  "description": "A simple masking library as a react hook",
   "version": "0.1.0",
-  "private": true,
-  "dependencies": {
+  "private": false,
+  "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
+  "main": "src/hooks/useMask.js",
+  "files": [
+    "src/hooks/useMask.js"
+  ],
+  "keywords": [
+    "mask",
+    "masking",
+    "input",
+    "hooks",
+    "react"
+  ],
+  "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^10.1.0",
@@ -10,11 +23,13 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"
   },
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -30,5 +45,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ryuuji3/react-mask-hook"
+  },
+  "homepage": "https://github.com/ryuuji3/react-mask-hook",
+  "license": "MIT"
 }

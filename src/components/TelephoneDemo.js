@@ -4,8 +4,8 @@ import React from 'react'
 export default function TelephoneDemo({ onChange }) {
     const maskProps = useMask(
         '',
-        '###-###-####',
-        '#',
+        '(###)-###-####',
+        '(___)-___-____',
         onChange,
     )
 

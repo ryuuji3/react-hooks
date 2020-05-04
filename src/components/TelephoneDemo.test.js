@@ -16,7 +16,7 @@ describe('Given an input with a telephone mask', () => {
     })
 
     it('should render placeholder with mask', () => {
-        expect(input).toHaveAttribute('placeholder', '###-###-####')
+        expect(input).toHaveAttribute('placeholder', '(___)-___-____')
     })
 
     describe('When user types numbers into the mask', () => {
@@ -25,13 +25,13 @@ describe('Given an input with a telephone mask', () => {
         })
 
         it('should render the numbers and the mask in the input', () => {
-            expect(input).toHaveValue('613-###-####')
+            expect(input).toHaveValue('(613)-___-____')
         })
 
         it('should call onChange with raw value, and masked value', () => {
             expect(onChange).toHaveBeenCalledWith({
                 value: '613',
-                maskedValue: '613-###-####'
+                maskedValue: '(613)-___-____'
             })
         })
 
@@ -41,13 +41,13 @@ describe('Given an input with a telephone mask', () => {
             })
 
             it('should render the numbers into the mask in the input', () => {
-                expect(input).toHaveValue('613-888-8888')
+                expect(input).toHaveValue('(613)-888-8888')
             })
 
             it('should call onChange with raw value, and masked value', () => {
                 expect(onChange).toHaveBeenCalledWith({
                     value: '6138888888',
-                    maskedValue: '613-888-8888'
+                    maskedValue: '(613)-888-8888'
                 })
             })
 
@@ -59,13 +59,13 @@ describe('Given an input with a telephone mask', () => {
                 })
 
                 it('should render the mask without the last character', () => {
-                    expect(input).toHaveValue('613-888-888#')
+                    expect(input).toHaveValue('(613)-888-888_')
                 })
 
                 it('should call onChange with raw value, and masked value', () => {
                     expect(onChange).toHaveBeenCalledWith({
                         value: '613888888',
-                        maskedValue: '613-888-888#'
+                        maskedValue: '(613)-888-888_'
                     })
                 })
             })

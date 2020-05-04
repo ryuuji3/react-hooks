@@ -1,16 +1,18 @@
-react-use-mask
+react-mask-hook
 ---
 
 An input masking lib designed to be testable and with simplicity in mind.
 
 ### Installation:
 
-Not available on npm yet.
+```bash
+npm install react-mask-hook
+```
 
 ### Sample Usage:
 
 ```js
-import useMask from 'react-use-mask'
+import useMask from 'react-mask-hook'
 
 function TelephoneDemo() {
     const maskProps = useMask(

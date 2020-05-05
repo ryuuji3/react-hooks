@@ -1,10 +1,10 @@
 {
   "name": "react-mask-hook",
   "description": "A simple masking library as a react hook",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": false,
   "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
-  "main": "src/hooks/useMask.js",
+  "main": "index.js",
   "files": [
     "src/hooks/useMask.js"
   ],
@@ -16,6 +16,9 @@
     "react"
   ],
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^10.1.0",
@@ -29,7 +32,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "build": "babel src/hooks/useMask.js --out-file index.js"
   },
   "eslintConfig": {
     "extends": "react-app"

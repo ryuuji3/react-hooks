@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export default function useMask(
     initialValue = '',
     mask,
     maskCharacterOrDisplayMask,
-    onChange,
+    passedOnChange,
 ) {
     const [ value, setValue ] = useState(initialValue)
     const maskedValue = parseValue(value, mask, maskCharacterOrDisplayMask)
@@ -12,36 +12,54 @@ export default function useMask(
 
     let placeholder = maskedValue // assuming that value is ''
 
-    function onKeyPress(e) {
-        const { key } = e
-
+    function onKeyPress({ key }) {
         if (value.length < maskLength) {
             setValue(`${value}${key}`)
         }
     }
 
-    function onKeyDown(e) {
-        if (e.key === 'Backspace') {
+    function onKeyDown({ key }) {
+        if (key === 'Backspace') {
             // Remove last character
             setValue(value.substring?.(0, value.length - 1))
         }
     }
 
-    useEffect(() => {
-        onChange && onChange({
-            value,
-            maskedValue,
-        })
-    }, [ value, maskedValue, onChange ])
+    function updateCursorPosition(element) {
+        const nextCursorPosition = getNextCursorPosition(mask, value)
+
+        element.setSelectionRange(nextCursorPosition, nextCursorPosition)
+    }
+
+    function onKeyUp({ target }) {
+        updateCursorPosition(target)
+    }
+
+    function onChange() {
+        if (passedOnChange) {
+            passedOnChange({
+                value,
+                maskedValue,
+            })
+        }
+    }
 
     return {
         value: value.length ? maskedValue : value, // don't render with value if they haven't entered anything
         placeholder,
 
-        onChange: e => e.preventDefault(), // Do nothing
+        onChange,
         onKeyPress,
         onKeyDown,
+        onKeyUp,
     }
+}
+
+function getNextCursorPosition(mask, value) {
+    const maskedValue = fitInputValueIntoMask(value, mask)
+    const nextPlaceholder = maskedValue.indexOf('#')
+
+    return nextPlaceholder > -1 ? nextPlaceholder : maskedValue.length
 }
 
 function convertValueStringToNumberArray(value) {
@@ -56,15 +74,20 @@ function convertMaskStringToArray(mask) {
         .split('') // convert value into character array
 }
 
-function parseValue(value, mask, maskCharacter) {
-    let maskCharacters = convertMaskStringToArray(mask)
+function fitInputValueIntoMask(value, mask) {
+    const maskCharacters = convertMaskStringToArray(mask)
     const valueCharacters = convertValueStringToNumberArray(value)
 
     // replace mask character with matching input character
     maskCharacters.forEach((_, charIndex) => maskCharacters[charIndex] = valueCharacters[charIndex] ?? maskCharacters[charIndex])
 
     // fit mask array back into mask, preserving spaces and special characters
-    const maskedValue = maskCharacters.reduce((result, maskCharacter) => result.replace(/#/, maskCharacter), mask)
+    return maskCharacters.reduce((result, maskCharacter) => result.replace(/#/, maskCharacter), mask)
+}
+
+function parseValue(value, mask, maskCharacter) {
+    let maskCharacters = convertMaskStringToArray(mask)
+    const maskedValue = fitInputValueIntoMask(value, mask)
 
     if (maskCharacter.length === 1) {
         return maskedValue.replace(/#/g, maskCharacter) // single mask character replacement

@@ -35,6 +35,10 @@ describe('Given an input with a telephone mask', () => {
             })
         })
 
+        it('should place cursor at beginning of next placeholder', () => {
+            expect(input.selectionStart).toBe('(613)-___-____'.indexOf('_'))
+        })
+
         describe('When user enters the remaining numbers into the mask', () => {
             beforeEach(() => {
                 userEvent.type(input, '8888888')
@@ -51,9 +55,16 @@ describe('Given an input with a telephone mask', () => {
                 })
             })
 
+            it('should place cursor at end of input', () => {
+                expect(input.selectionStart).toBe('(613)-888-8888'.length)
+            })
+
             describe('When the user hits backspace', () => {
                 beforeEach(() => {
                     fireEvent.keyDown(input, {
+                        key: 'Backspace'
+                    })
+                    fireEvent.keyUp(input, {
                         key: 'Backspace'
                     })
                 })
@@ -67,6 +78,10 @@ describe('Given an input with a telephone mask', () => {
                         value: '613888888',
                         maskedValue: '(613)-888-888_'
                     })
+                })
+
+                it('should place cursor at beginning of next placeholder', () => {
+                    expect(input.selectionStart).toBe('(613)-888-888_'.indexOf('_'))
                 })
             })
         })

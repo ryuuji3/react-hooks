@@ -1,7 +1,7 @@
 {
   "name": "react-mask-hook",
   "description": "A simple masking library as a react hook",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
   "main": "src/hooks/useMask.js",

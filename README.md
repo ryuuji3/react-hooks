@@ -56,7 +56,7 @@ function DateDemo() {
 ### API
 
 ```js
-const { value, placeholder, onChange, onKeyDown, onKeyPress } = useMask(initialValue, mask, maskCharacterOrDisplayMask)
+const { value, placeholder, onChange, onKeyDown, onKeyPress, onKeyUp } = useMask(initialValue, mask, maskCharacterOrDisplayMask)
 ```
 
 Arguments:

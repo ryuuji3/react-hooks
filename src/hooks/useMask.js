@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 export default function useMask(
     initialValue = '',
@@ -9,27 +9,23 @@ export default function useMask(
     const [ value, setValue ] = useState(initialValue)
     const maskedValue = parseValue(value, mask, maskCharacterOrDisplayMask)
     const maskLength = convertMaskStringToArray(mask, maskCharacterOrDisplayMask).length
+    const nextCursorPosition = getNextCursorPosition(mask, value)
+    const inputRef = useRef(null)
 
     let placeholder = maskedValue // assuming that value is ''
-
-    function onKeyPress({ key }) {
-        if (value.length < maskLength) {
-            setValue(`${value}${key}`)
-        }
-    }
 
     function onKeyDown({ key }) {
         if (key === 'Backspace') {
             // Remove last character
             setValue(value.substring?.(0, value.length - 1))
+        } else if (value.length < maskLength) {
+            setValue(`${value}${key}`)
         }
     }
 
-    function updateCursorPosition(element) {
-        const nextCursorPosition = getNextCursorPosition(mask, value)
-
+    const updateCursorPosition = useCallback(element => {
         element.setSelectionRange(nextCursorPosition, nextCursorPosition)
-    }
+    }, [ nextCursorPosition ])
 
     function onKeyUp({ target }) {
         updateCursorPosition(target)
@@ -44,12 +40,21 @@ export default function useMask(
         }
     }
 
+    useEffect(() => {
+        const element = inputRef.current
+
+        requestAnimationFrame(() => {
+            updateCursorPosition(element)
+        })
+    }, [ updateCursorPosition, nextCursorPosition ])
+
     return {
+        ref: inputRef,
+
         value: value.length ? maskedValue : value, // don't render with value if they haven't entered anything
         placeholder,
 
         onChange,
-        onKeyPress,
         onKeyDown,
         onKeyUp,
     }

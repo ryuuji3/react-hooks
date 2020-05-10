@@ -7,12 +7,12 @@ export default function useMask(
     passedOnChange,
 ) {
     const [ value, setValue ] = useState(initialValue)
-    const maskedValue = parseValue(value, mask, maskCharacterOrDisplayMask)
-    const maskLength = convertMaskStringToArray(mask, maskCharacterOrDisplayMask).length
-    const nextCursorPosition = getNextCursorPosition(mask, value)
     const inputRef = useRef(null)
 
-    let placeholder = maskedValue // assuming that value is ''
+    const maskedValue = parseValue(value, mask, maskCharacterOrDisplayMask)
+    const maskLength = convertMaskStringToArray(mask, maskCharacterOrDisplayMask).length
+    const placeholder = parseValue('', mask, maskCharacterOrDisplayMask)
+    const nextCursorPosition = getNextCursorPosition(mask, value)
 
     function onKeyDown({ key }) {
         if (key === 'Backspace') {
@@ -51,6 +51,7 @@ export default function useMask(
     return {
         ref: inputRef,
 
+        'data-value': value.length ? value: undefined,
         value: value.length ? maskedValue : value, // don't render with value if they haven't entered anything
         placeholder,
 

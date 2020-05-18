@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useReducer, useEffect, useCallback, useRef } from 'react'
 
 export default function useMask(
     initialValue = '',
@@ -6,20 +6,20 @@ export default function useMask(
     maskCharacterOrDisplayMask,
     passedOnChange,
 ) {
-    const [ value, setValue ] = useState(initialValue)
+    const [ state, dispatch ] = useReducer(reducer, { value: initialValue })
     const inputRef = useRef(null)
 
-    const maskedValue = parseValue(value, mask, maskCharacterOrDisplayMask)
+    const maskedValue = parseValue(state.value, mask, maskCharacterOrDisplayMask)
     const maskLength = convertMaskStringToArray(mask, maskCharacterOrDisplayMask).length
     const placeholder = parseValue('', mask, maskCharacterOrDisplayMask)
-    const nextCursorPosition = getNextCursorPosition(mask, value)
+    const nextCursorPosition = getNextCursorPosition(mask, state.value)
 
     function onKeyDown({ key }) {
         if (key === 'Backspace') {
             // Remove last character
-            setValue(value.substring?.(0, value.length - 1))
-        } else if (value.length < maskLength) {
-            setValue(`${value}${key}`)
+            dispatch({ type: 'BACKSPACE' })
+        } else if (state.value.length < maskLength) {
+            dispatch({ type: 'TYPE_CHARACTER', key })
         }
     }
 
@@ -34,7 +34,7 @@ export default function useMask(
     function onChange() {
         if (passedOnChange) {
             passedOnChange({
-                value,
+                value: state.value,
                 maskedValue,
             })
         }
@@ -51,13 +51,29 @@ export default function useMask(
     return {
         ref: inputRef,
 
-        'data-value': value.length ? value: undefined,
-        value: value.length ? maskedValue : value, // don't render with value if they haven't entered anything
+        'data-value': state.value.length ? state.value: undefined,
+        value: state.value.length ? maskedValue : '', // don't render with value if they haven't entered anything
         placeholder,
 
         onChange,
         onKeyDown,
         onKeyUp,
+    }
+}
+
+function reducer(state, action) {
+    switch(action.type) {
+        case 'TYPE_CHARACTER': {
+            return {
+                value: `${state.value}${action.key}`
+            }
+        }
+        case 'BACKSPACE': {
+            return {
+                value: state.value.substring?.(0, state.value.length - 1)
+            }
+        }
+        default: return state
     }
 }
 

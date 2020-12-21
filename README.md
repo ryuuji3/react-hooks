@@ -17,8 +17,10 @@ npm install react-mask-hook
 import useMask from 'react-mask-hook'
 
 function TelephoneDemo() {
+    const [ value, setValue ] = useState('')
     const maskProps = useMask(
-        '',
+        value,
+        setValue,
         '###-###-####',
         '_', // renders mask like ___-___-____
     )
@@ -36,8 +38,10 @@ function TelephoneDemo() {
 }
 
 function DateDemo() {
+    const [ value, setValue ] = useState('')
     const maskProps = useMask(
-        '',
+        value,
+        setValue,
         '## - ## - ####',
         'DD - MM - YYYY', // Will render the mask exactly like this (ie. the displayed mask)
     )
@@ -58,14 +62,15 @@ function DateDemo() {
 ### API
 
 ```js
-const { value, placeholder, onChange, onKeyDown, onKeyUp, ref } = useMask(initialValue, mask, maskCharacterOrDisplayMask)
+const { value, placeholder, onChange, onKeyUp, ref } = useMask(value, onChange, mask, maskCharacterOrDisplayMask)
 ```
 
 Arguments:
 
 | argument | description |
 | --- | --- |
-| `initialValue` | is the initial string value. It can include special characters used in the mask; they are ignored. |
+| `value` | is the string value without formatting. this will hold only numbers |
+| `onChange` | is the callback used to update value. you must supply local state or deferred state.
 | `mask` | is what should be displayed and with # as a placeholder for the numbers to be input. 
 | `maskCharacterOrDisplayMask` | The third argument is a single character to use as the displayed placeholder instead of #, or it can be an entire string that matches the mask but with different characters are the placeholder. Your displayed mask must have the same length as the mask. |
 

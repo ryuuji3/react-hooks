@@ -16,10 +16,10 @@ export default function useMask(
     maskCharacterOrDisplayMask,
 ) {
     const inputRef = useRef(null)
-
     const maskedValue = getMaskedValue(value, mask, maskCharacterOrDisplayMask)
     const placeholder = getMaskedValue('', mask, maskCharacterOrDisplayMask)
     const nextCursorPosition = getNextCursorPosition(mask, value)
+    const scheduleAfterRender = useCallbackAfterRender()
 
     useDebugValue({
         value,
@@ -29,26 +29,23 @@ export default function useMask(
 
     function handleChange({ target }) {
         const numbers = getNumbersFromMaskedValue(target.value, mask, maskCharacterOrDisplayMask)
-
         
-        return target.value.length < placeholder.length
-            ? onChange(numbers.slice(0, numbers.length < value.length ? numbers.length : numbers.length - 1)) // remove a character
-            : onChange(numbers)
+        const newValue = target.value.length < placeholder.length
+            ? numbers.slice(0, numbers.length < value.length ? numbers.length : numbers.length - 1) // remove a character
+            : numbers
+
+        onChange(newValue)
+
+        scheduleAfterRender(() => {
+            setCursorPositionForElement(target, getNextCursorPosition(mask, newValue))
+        })
     }
 
-    function onFocus({ target }) {
-        setCursorPositionForElement(target, nextCursorPosition)
-    }
-
+    // For some reason, tests fail without this...
+    // TODO: Figure out why this is necessary
     function onKeyUp({ target }) {
         setCursorPositionForElement(target, nextCursorPosition)
     }
-    
-    useLayoutEffect(() => {
-        const element = inputRef.current
-
-        setCursorPositionForElement(element, nextCursorPosition)
-    }, [ nextCursorPosition ])
 
     return {
         ref: inputRef,
@@ -59,7 +56,24 @@ export default function useMask(
 
         onChange: handleChange,
         onKeyUp,
-        onFocus,
+    }
+}
+
+/**
+ * Run code in returned callback
+ * 
+ * @returns {function} callback
+ */
+function useCallbackAfterRender() {
+    const lastRun = useRef(null)
+
+    useLayoutEffect(() => {
+        lastRun.current?.()
+        lastRun.current = null
+    })
+
+    return (callback) => { 
+        lastRun.current = callback  // schedule callback after render
     }
 }
 

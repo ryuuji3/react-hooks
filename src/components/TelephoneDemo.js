@@ -1,12 +1,19 @@
+import React, { useState } from 'react'
 import useMask from '../hooks/useMask'
-import React from 'react'
+
 
 export default function TelephoneDemo({ onChange }) {
+    const [ value, setValue ] = useState('')
+
+    function handleChange(value) {
+        onChange?.(value)
+        setValue(value)
+    }
     const maskProps = useMask(
-        '',
+        value,
+        handleChange,
         '(###)-###-####',
         '(___)-___-____',
-        onChange,
     )
 
     return (

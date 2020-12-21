@@ -1,80 +1,58 @@
-import { useReducer, useEffect, useCallback, useRef } from 'react'
+import { useRef, useLayoutEffect, useDebugValue, } from 'react'
 
 export default function useMask(
-    initialValue = '',
+    value = '',
+    onChange,
     mask,
     maskCharacterOrDisplayMask,
-    passedOnChange,
 ) {
-    const [ state, dispatch ] = useReducer(reducer, { value: initialValue })
     const inputRef = useRef(null)
 
-    const maskedValue = parseValue(state.value, mask, maskCharacterOrDisplayMask)
-    const maskLength = convertMaskStringToArray(mask, maskCharacterOrDisplayMask).length
-    const placeholder = parseValue('', mask, maskCharacterOrDisplayMask)
-    const nextCursorPosition = getNextCursorPosition(mask, state.value)
+    const maskedValue = getMaskedValue(value, mask, maskCharacterOrDisplayMask)
+    const maskLength = getMaskFromMaskedValue(mask, maskCharacterOrDisplayMask).length
+    const placeholder = getMaskedValue('', mask, maskCharacterOrDisplayMask)
+    const nextCursorPosition = getNextCursorPosition(mask, value)
 
-    function onKeyDown({ key }) {
-        if (key === 'Backspace') {
-            // Remove last character
-            dispatch({ type: 'BACKSPACE' })
-        } else if (state.value.length < maskLength) {
-            dispatch({ type: 'TYPE_CHARACTER', key })
+    useDebugValue({
+        value,
+        maskedValue,
+        nextCursorPosition,
+    })
+
+    function handleChange({ target }) {
+        const newMaskedValue = getMaskedValue(target.value, mask, maskCharacterOrDisplayMask)
+
+        if (value.length < maskLength) {
+            onChange(getNumbersFromMaskedValue(newMaskedValue))
+        } else if (getNumbersFromMaskedValue(newMaskedValue).length <= getNumbersFromMaskedValue(maskedValue).length) {
+            onChange(value.slice(0, value.length - 1))
         }
     }
-
-    const updateCursorPosition = useCallback(element => {
-        element.setSelectionRange(nextCursorPosition, nextCursorPosition)
-    }, [ nextCursorPosition ])
 
     function onKeyUp({ target }) {
-        updateCursorPosition(target)
+        setCursorPositionForElement(target, nextCursorPosition)
     }
-
-    function onChange() {
-        if (passedOnChange) {
-            passedOnChange({
-                value: state.value,
-                maskedValue,
-            })
-        }
-    }
-
-    useEffect(() => {
+    
+    useLayoutEffect(() => {
         const element = inputRef.current
 
-        requestAnimationFrame(() => {
-            updateCursorPosition(element)
-        })
-    }, [ updateCursorPosition, nextCursorPosition ])
+        setCursorPositionForElement(element, nextCursorPosition)
+    }, [ nextCursorPosition ])
 
     return {
         ref: inputRef,
 
-        'data-value': state.value.length ? state.value: undefined,
-        value: state.value.length ? maskedValue : '', // don't render with value if they haven't entered anything
+        'data-value': value.length ? value: undefined,
+        value: value.length ? maskedValue : '', // don't render with value if they haven't entered anything
         placeholder,
 
-        onChange,
-        onKeyDown,
+        onChange: handleChange,
         onKeyUp,
     }
 }
 
-function reducer(state, action) {
-    switch(action.type) {
-        case 'TYPE_CHARACTER': {
-            return {
-                value: `${state.value}${action.key}`
-            }
-        }
-        case 'BACKSPACE': {
-            return {
-                value: state.value.substring?.(0, state.value.length - 1)
-            }
-        }
-        default: return state
-    }
+function setCursorPositionForElement(element, cursorPosition) {
+    element?.setSelectionRange(cursorPosition, cursorPosition, 'forward')
 }
 
 function getNextCursorPosition(mask, value) {
@@ -84,21 +62,19 @@ function getNextCursorPosition(mask, value) {
     return nextPlaceholder > -1 ? nextPlaceholder : maskedValue.length
 }
 
-function convertValueStringToNumberArray(value) {
+function getNumbersFromMaskedValue(value) {
     return value
         .replace(/[^\d]/g, '') // remove non numbers
-        .split('') // convert value into character array
 }
 
-function convertMaskStringToArray(mask) {
+function getMaskFromMaskedValue(mask) {
     return mask
         .replace(/[^#]/g, '') // remove non mask characters
-        .split('') // convert value into character array
 }
 
 function fitInputValueIntoMask(value, mask) {
-    const maskCharacters = convertMaskStringToArray(mask)
-    const valueCharacters = convertValueStringToNumberArray(value)
+    const maskCharacters = getMaskFromMaskedValue(mask).split('')
+    const valueCharacters = getNumbersFromMaskedValue(value).split('')
 
     // replace mask character with matching input character
     maskCharacters.forEach((_, charIndex) => maskCharacters[charIndex] = valueCharacters[charIndex] ?? maskCharacters[charIndex])
@@ -107,8 +83,8 @@ function fitInputValueIntoMask(value, mask) {
     return maskCharacters.reduce((result, maskCharacter) => result.replace(/#/, maskCharacter), mask)
 }
 
-function parseValue(value, mask, maskCharacter) {
-    let maskCharacters = convertMaskStringToArray(mask)
+function getMaskedValue(value, mask, maskCharacter) {
+    let maskCharacters = getMaskFromMaskedValue(mask).split('')
     const maskedValue = fitInputValueIntoMask(value, mask)
 
     if (maskCharacter.length === 1) {

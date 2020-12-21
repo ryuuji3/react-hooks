@@ -1,12 +1,19 @@
+import React, { useState } from 'react'
 import useMask from '../hooks/useMask'
-import React from 'react'
+
 
 export default function DateDemo({ onChange }) {
+    const [ value, setValue ] = useState('')
+
+    function handleChange(value) {
+        onChange?.(value)
+        setValue(value)
+    }
     const maskProps = useMask(
-        '',
+        value,
+        handleChange,
         '## - ## - ####',
         'DD - MM - YYYY',
-        onChange,
     )
 
     return (

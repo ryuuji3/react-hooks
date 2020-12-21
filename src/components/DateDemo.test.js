@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 
 import DateDemo from './DateDemo'
 
-describe('Given an input with a telephone mask', () => {
+describe('Given an input with a date mask', () => {
     let onChange = jest.fn()
     let instance
     let input
@@ -28,10 +28,7 @@ describe('Given an input with a telephone mask', () => {
         })
 
         it('should call onChange with raw value, and masked value', () => {
-            expect(onChange).toHaveBeenCalledWith({
-                value: '28',
-                maskedValue: '28 - MM - YYYY'
-            })
+            expect(onChange).toHaveBeenCalledWith('28')
         })
 
         it('should place cursor at beginning of next placeholder', () => {
@@ -48,10 +45,7 @@ describe('Given an input with a telephone mask', () => {
             })
 
             it('should call onChange with raw value, and masked value', () => {
-                expect(onChange).toHaveBeenCalledWith({
-                    value: '28101995',
-                    maskedValue: '28 - 10 - 1995'
-                })
+                expect(onChange).toHaveBeenCalledWith('28101995')
             })
 
             it('should place cursor at end of input', () => {
@@ -60,12 +54,7 @@ describe('Given an input with a telephone mask', () => {
 
             describe('When the user hits backspace', () => {
                 beforeEach(() => {
-                    fireEvent.keyDown(input, {
-                        key: 'Backspace'
-                    })
-                    fireEvent.keyUp(input, {
-                        key: 'Backspace'
-                    })
+                    userEvent.type(input, '{backspace}')
                 })
 
                 it('should render the mask without the last character', () => {
@@ -73,10 +62,7 @@ describe('Given an input with a telephone mask', () => {
                 })
 
                 it('should call onChange with raw value, and masked value', () => {
-                    expect(onChange).toHaveBeenCalledWith({
-                        value: '2810199',
-                        maskedValue: '28 - 10 - 199Y'
-                    })
+                    expect(onChange).toHaveBeenCalledWith('2810199')
                 })
 
                 it('should place cursor at beginning of next placeholder', () => {

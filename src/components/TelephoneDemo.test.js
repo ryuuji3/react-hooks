@@ -29,10 +29,7 @@ describe('Given an input with a telephone mask', () => {
         })
 
         it('should call onChange with raw value, and masked value', () => {
-            expect(onChange).toHaveBeenCalledWith({
-                value: '613',
-                maskedValue: '(613)-___-____'
-            })
+            expect(onChange).toHaveBeenCalledWith('613')
         })
 
         it('should place cursor at beginning of next placeholder', () => {
@@ -49,10 +46,7 @@ describe('Given an input with a telephone mask', () => {
             })
 
             it('should call onChange with raw value, and masked value', () => {
-                expect(onChange).toHaveBeenCalledWith({
-                    value: '6138888888',
-                    maskedValue: '(613)-888-8888'
-                })
+                expect(onChange).toHaveBeenCalledWith('6138888888')
             })
 
             it('should place cursor at end of input', () => {
@@ -61,12 +55,7 @@ describe('Given an input with a telephone mask', () => {
 
             describe('When the user hits backspace', () => {
                 beforeEach(() => {
-                    fireEvent.keyDown(input, {
-                        key: 'Backspace'
-                    })
-                    fireEvent.keyUp(input, {
-                        key: 'Backspace'
-                    })
+                    userEvent.type(input, '{backspace}')
                 })
 
                 it('should render the mask without the last character', () => {
@@ -74,10 +63,7 @@ describe('Given an input with a telephone mask', () => {
                 })
 
                 it('should call onChange with raw value, and masked value', () => {
-                    expect(onChange).toHaveBeenCalledWith({
-                        value: '613888888',
-                        maskedValue: '(613)-888-888_'
-                    })
+                    expect(onChange).toHaveBeenCalledWith('613888888')
                 })
 
                 it('should place cursor at beginning of next placeholder', () => {

@@ -1,5 +1,14 @@
 import { useRef, useLayoutEffect, useDebugValue, } from 'react'
 
+/**
+ * 
+ * @param {string} value 
+ * @param {function} onChange 
+ * @param {string} mask 
+ * @param {string} maskCharacterOrDisplayMask
+ * 
+ * @returns {object} props
+ */
 export default function useMask(
     value = '',
     onChange,
@@ -9,7 +18,6 @@ export default function useMask(
     const inputRef = useRef(null)
 
     const maskedValue = getMaskedValue(value, mask, maskCharacterOrDisplayMask)
-    const maskLength = getMaskFromMaskedValue(mask, maskCharacterOrDisplayMask).length
     const placeholder = getMaskedValue('', mask, maskCharacterOrDisplayMask)
     const nextCursorPosition = getNextCursorPosition(mask, value)
 
@@ -20,13 +28,16 @@ export default function useMask(
     })
 
     function handleChange({ target }) {
-        const newMaskedValue = getMaskedValue(target.value, mask, maskCharacterOrDisplayMask)
+        const numbers = getNumbersFromMaskedValue(target.value, mask, maskCharacterOrDisplayMask)
 
-        if (value.length < maskLength) {
-            onChange(getNumbersFromMaskedValue(newMaskedValue))
-        } else if (getNumbersFromMaskedValue(newMaskedValue).length <= getNumbersFromMaskedValue(maskedValue).length) {
-            onChange(value.slice(0, value.length - 1))
-        }
+        
+        return target.value.length < placeholder.length
+            ? onChange(numbers.slice(0, numbers.length < value.length ? numbers.length : numbers.length - 1)) // remove a character
+            : onChange(numbers)
+    }
+
+    function onFocus({ target }) {
+        setCursorPositionForElement(target, nextCursorPosition)
     }
 
     function onKeyUp({ target }) {
@@ -43,18 +54,31 @@ export default function useMask(
         ref: inputRef,
 
         'data-value': value.length ? value: undefined,
-        value: value.length ? maskedValue : '', // don't render with value if they haven't entered anything
+        value: value.length ? maskedValue : placeholder, // render placeholder if they haven't entered anything
         placeholder,
 
         onChange: handleChange,
         onKeyUp,
+        onFocus,
     }
 }
 
+/**
+ * 
+ * @param {HTMLInputElement} element 
+ * @param {number} cursorPosition 
+ */
 function setCursorPositionForElement(element, cursorPosition) {
     element?.setSelectionRange(cursorPosition, cursorPosition, 'forward')
 }
 
+/**
+ * 
+ * @param {string} mask 
+ * @param {string} value
+ * 
+ * @returns {number} 
+ */
 function getNextCursorPosition(mask, value) {
     const maskedValue = fitInputValueIntoMask(value, mask)
     const nextPlaceholder = maskedValue.indexOf('#')
@@ -62,16 +86,35 @@ function getNextCursorPosition(mask, value) {
     return nextPlaceholder > -1 ? nextPlaceholder : maskedValue.length
 }
 
+/**
+ * 
+ * @param {string} value
+ * 
+ * @returns {string} 
+ */
 function getNumbersFromMaskedValue(value) {
     return value
         .replace(/[^\d]/g, '') // remove non numbers
 }
 
+/**
+ * 
+ * @param {string} value
+ * 
+ * @returns {string} 
+ */
 function getMaskFromMaskedValue(mask) {
     return mask
         .replace(/[^#]/g, '') // remove non mask characters
 }
 
+/**
+ * 
+ * @param {string} value 
+ * @param {string} mask
+ * 
+ * @returns {string} 
+ */
 function fitInputValueIntoMask(value, mask) {
     const maskCharacters = getMaskFromMaskedValue(mask).split('')
     const valueCharacters = getNumbersFromMaskedValue(value).split('')
@@ -83,6 +126,14 @@ function fitInputValueIntoMask(value, mask) {
     return maskCharacters.reduce((result, maskCharacter) => result.replace(/#/, maskCharacter), mask)
 }
 
+/**
+ * 
+ * @param {string} value 
+ * @param {string} mask 
+ * @param {string} maskCharacter 
+ * 
+ * @returns {string}
+ */
 function getMaskedValue(value, mask, maskCharacter) {
     let maskCharacters = getMaskFromMaskedValue(mask).split('')
     const maskedValue = fitInputValueIntoMask(value, mask)

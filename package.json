@@ -6,7 +6,7 @@
   "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
   "main": "index.js",
   "files": [
-    "src/index.js"
+    "src/useMask.js"
   ],
   "keywords": [
     "mask",
@@ -38,8 +38,9 @@
   },
   "scripts": {
     "start": "start-storybook -p 6006",
+    "start:react": "react-scripts start",
     "test": "react-scripts test",
-    "build": "babel src/index.js --out-file index.js",
+    "build": "babel src/useMask.js --out-file index.js",
     "build-storybook": "build-storybook"
   },
   "eslintConfig": {

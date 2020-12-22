@@ -2,18 +2,16 @@ import { useRef, useLayoutEffect, useDebugValue, } from 'react'
 
 /**
  * 
- * @param {string} value 
- * @param {function} onChange 
- * @param {string} mask 
- * @param {string} maskCharacterOrDisplayMask
- * 
- * @returns {object} props
+ * @param value 
+ * @param onChange 
+ * @param mask 
+ * @param maskCharacterOrDisplayMask 
  */
 export default function useMask(
     value = '',
-    onChange,
-    mask,
-    maskCharacterOrDisplayMask,
+    onChange: (value: string) => void,
+    mask: string,
+    maskCharacterOrDisplayMask: string,
 ) {
     const inputRef = useRef(null)
     const maskedValue = getMaskedValue(value, mask, maskCharacterOrDisplayMask)
@@ -27,8 +25,8 @@ export default function useMask(
         nextCursorPosition,
     })
 
-    function handleChange({ target }) {
-        const numbers = getNumbersFromMaskedValue(target.value, mask, maskCharacterOrDisplayMask)
+    function handleChange({ target }: { target: HTMLInputElement }) {
+        const numbers = getNumbersFromMaskedValue(target.value)
         
         const newValue = target.value.length < placeholder.length
             ? numbers.slice(0, numbers.length < value.length ? numbers.length : numbers.length - 1) // remove a character
@@ -43,7 +41,7 @@ export default function useMask(
 
     // For some reason, tests fail without this...
     // TODO: Figure out why this is necessary
-    function onKeyUp({ target }) {
+    function onKeyUp({ target }: { target: HTMLInputElement }) {
         setCursorPositionForElement(target, nextCursorPosition)
     }
 
@@ -60,12 +58,10 @@ export default function useMask(
 }
 
 /**
- * Run code in returned callback
- * 
- * @returns {function} callback
+ * Run code in returned callback.
  */
-function useCallbackAfterRender() {
-    const lastRun = useRef(null)
+function useCallbackAfterRender(): (callback: () => void) => void {
+    const lastRun = useRef<(() => void) | null>(null)
 
     useLayoutEffect(() => {
         lastRun.current?.()
@@ -79,21 +75,19 @@ function useCallbackAfterRender() {
 
 /**
  * 
- * @param {HTMLInputElement} element 
- * @param {number} cursorPosition 
+ * @param element 
+ * @param cursorPosition 
  */
-function setCursorPositionForElement(element, cursorPosition) {
+function setCursorPositionForElement(element: HTMLInputElement, cursorPosition: number): void {
     element?.setSelectionRange(cursorPosition, cursorPosition, 'forward')
 }
 
 /**
  * 
- * @param {string} mask 
- * @param {string} value
- * 
- * @returns {number} 
+ * @param mask 
+ * @param value 
  */
-function getNextCursorPosition(mask, value) {
+function getNextCursorPosition(mask: string, value: string): number {
     const maskedValue = fitInputValueIntoMask(value, mask)
     const nextPlaceholder = maskedValue.indexOf('#')
 
@@ -102,34 +96,28 @@ function getNextCursorPosition(mask, value) {
 
 /**
  * 
- * @param {string} value
- * 
- * @returns {string} 
+ * @param value 
  */
-function getNumbersFromMaskedValue(value) {
+function getNumbersFromMaskedValue(value: string): string {
     return value
         .replace(/[^\d]/g, '') // remove non numbers
 }
 
 /**
  * 
- * @param {string} value
- * 
- * @returns {string} 
+ * @param mask 
  */
-function getMaskFromMaskedValue(mask) {
+function getMaskFromMaskedValue(mask: string): string {
     return mask
         .replace(/[^#]/g, '') // remove non mask characters
 }
 
 /**
  * 
- * @param {string} value 
- * @param {string} mask
- * 
- * @returns {string} 
+ * @param value 
+ * @param mask
  */
-function fitInputValueIntoMask(value, mask) {
+function fitInputValueIntoMask(value: string, mask: string): string {
     const maskCharacters = getMaskFromMaskedValue(mask).split('')
     const valueCharacters = getNumbersFromMaskedValue(value).split('')
 
@@ -142,13 +130,11 @@ function fitInputValueIntoMask(value, mask) {
 
 /**
  * 
- * @param {string} value 
- * @param {string} mask 
- * @param {string} maskCharacter 
- * 
- * @returns {string}
+ * @param value 
+ * @param mask 
+ * @param maskCharacter 
  */
-function getMaskedValue(value, mask, maskCharacter) {
+function getMaskedValue(value: string, mask: string, maskCharacter: string): string {
     let maskCharacters = getMaskFromMaskedValue(mask).split('')
     const maskedValue = fitInputValueIntoMask(value, mask)
 

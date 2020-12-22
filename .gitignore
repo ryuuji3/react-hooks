@@ -8,8 +8,8 @@
 # testing
 /coverage
 
-# production
-index.js
+# output
+/lib
 
 # misc
 .DS_Store

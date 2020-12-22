@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import useMask from '../../useMask'
+import useMask from '../..'
 
 
 export default function DateDemo({ onChange }) {

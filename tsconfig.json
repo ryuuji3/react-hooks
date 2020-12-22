@@ -18,9 +18,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "outDir": "lib"
+    "outDir": "lib",
+    "declaration": true
   },
   "include": [
-    "src/useMask.ts"
+    "src/**/*.ts"
   ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "src/stories"
+  ]
 }

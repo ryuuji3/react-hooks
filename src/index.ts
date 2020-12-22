@@ -11,21 +11,22 @@ import { getNumbersFromMaskedValue } from './functions/regexHelpers'
  * @param value 
  * @param onChange 
  * @param mask 
- * @param maskCharacterOrDisplayMask 
+ * @param displayMask 
  */
 export default function useMask(
     value = '',
     onChange: (value: string) => void,
     mask: string,
-    maskCharacterOrDisplayMask: string,
+    displayMask: string,
+    options: MaskOptions = defaultOptions,
 ) {
     const inputRef = useRef(null)
-    const maskedValue = getMaskedValue(value, mask, maskCharacterOrDisplayMask)
-    const placeholder = getMaskedValue('', mask, maskCharacterOrDisplayMask)
+    const maskedValue = getMaskedValue(value, mask, displayMask)
+    const placeholder = getMaskedValue('', mask, displayMask)
     const nextCursorPosition = getNextCursorPosition(mask, value)
     const scheduleAfterRender = useCallbackAfterRender()
 
-    useDebugValue({
+    useDebugValue(options.debug && {
         value,
         maskedValue,
         nextCursorPosition,
@@ -34,12 +35,16 @@ export default function useMask(
     function handleChange({ target }: { target: HTMLInputElement }) {
         const numbers = getNumbersFromMaskedValue(target.value)
         
-        const newValue = target.value.length < placeholder.length
-            ? numbers.slice(0, numbers.length < value.length ? numbers.length : numbers.length - 1) // remove a character
+        const newValue = (
+            target.value.length < placeholder.length // deleted a mask symbol
+            && numbers.length >= value.length // a number was deleted so we don't need to remove another
+        )
+            ? numbers.slice(0, numbers.length - 1) // remove a character
             : numbers
 
         onChange(newValue)
 
+        // onChange is asynchronous so update cursor after it re-renders
         scheduleAfterRender(() => {
             setCursorPositionForElement(target, getNextCursorPosition(mask, newValue))
         })
@@ -61,6 +66,13 @@ export default function useMask(
         onChange: handleChange,
         onKeyUp,
     }
+}
+
+interface MaskOptions {
+    debug: boolean
+}
+const defaultOptions = {
+    debug: false,
 }
 
 /**

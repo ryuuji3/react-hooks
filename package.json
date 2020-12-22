@@ -6,7 +6,7 @@
   "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
   "main": "index.js",
   "files": [
-    "src/hooks/useMask.js"
+    "src/index.js"
   ],
   "keywords": [
     "mask",
@@ -19,9 +19,14 @@
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
+    "@storybook/addon-actions": "^6.1.11",
+    "@storybook/addon-essentials": "^6.1.11",
+    "@storybook/addon-links": "^6.1.11",
+    "@storybook/react": "^6.1.11",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
+    "babel-loader": "^8.1.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1"
@@ -31,9 +36,10 @@
     "react-dom": "^16.8.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "start-storybook -p 6006",
     "test": "react-scripts test",
-    "build": "babel src/hooks/useMask.js --out-file index.js"
+    "build": "babel src/index.js --out-file index.js",
+    "build-storybook": "build-storybook"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -55,5 +61,6 @@
     "url": "https://github.com/ryuuji3/react-mask-hook"
   },
   "homepage": "https://github.com/ryuuji3/react-mask-hook",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {}
 }

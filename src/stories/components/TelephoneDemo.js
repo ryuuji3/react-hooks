@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import useMask from '../hooks/useMask'
+import useMask from '../..'
 
 
-export default function DateDemo({ onChange }) {
+export default function TelephoneDemo({ onChange }) {
     const [ value, setValue ] = useState('')
 
     function handleChange(value) {
@@ -12,16 +12,16 @@ export default function DateDemo({ onChange }) {
     const maskProps = useMask(
         value,
         handleChange,
-        '## - ## - ####',
-        'DD - MM - YYYY',
+        '(###)-###-####',
+        '(___)-___-____',
     )
 
     return (
         <label>
-            Sample input with date mask:
+            Sample input with phone mask:
             <input
                 name="test"
-                type="text"
+                type="tel"
                 {...maskProps}
             />
         </label>

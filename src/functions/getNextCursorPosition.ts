@@ -5,7 +5,7 @@ import fitInputValueIntoMask from './fitInputValueIntoMask'
  * @param value 
  * @param mask 
  */
-function getNextCursorPosition(value: string, mask: string): number {
+function getNextCursorPosition(value: string, mask: string | RegExp): number {
     const maskedValue = fitInputValueIntoMask(value, mask)
     const nextPlaceholder = maskedValue.indexOf('#')
 

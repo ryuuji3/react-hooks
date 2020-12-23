@@ -6,7 +6,13 @@ import { getMaskFromMaskedValue, getNumbersFromMaskedValue } from './regexHelper
  * @param value 
  * @param mask
  */
-function fitInputValueIntoMask(value: string, mask: string): string {
+function fitInputValueIntoMask(value: string, mask: string | RegExp): string {
+    return typeof mask === 'string'
+        ? fitInputValueIntoStringMask(value, mask)
+        : fitInputValueIntoRegExpMask(value, mask)
+}
+
+function fitInputValueIntoStringMask(value: string, mask: string): string {
     const maskCharacters = getMaskFromMaskedValue(mask).split('')
     const valueCharacters = getNumbersFromMaskedValue(value).split('')
 
@@ -15,6 +21,10 @@ function fitInputValueIntoMask(value: string, mask: string): string {
 
     // fit mask array back into mask, preserving spaces and special characters
     return maskCharacters.reduce((result, maskCharacter) => result.replace(/#/, maskCharacter), mask)
+}
+
+function fitInputValueIntoRegExpMask(value: string, mask: RegExp): string {
+    return '' // TODO: Implement
 }
 
 export default fitInputValueIntoMask

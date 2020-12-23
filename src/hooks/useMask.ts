@@ -16,7 +16,7 @@ import { getNumbersFromMaskedValue } from '../functions/regexHelpers'
 export default function useMask(
     value = '',
     onChange: (value: string) => void,
-    mask: string,
+    mask: string | RegExp,
     displayMask: string,
     options: MaskOptions = defaultOptions,
 ) {

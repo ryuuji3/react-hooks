@@ -15,6 +15,26 @@ npm install react-mask-hook
 
 ```js
 import useMask from 'react-mask-hook'
+function PostalCodeDemo() {
+    const [ value, setValue ] = useState('')
+    const maskProps = useMask(
+        value,
+        handleChange,
+        /[A-Z][\d][A-Z] [\d][A-Z][\d]/, // regular expression but every placeholder character needs grouped
+        '___ ___', // renders mask like ___ ___
+    )
+
+    return (
+        <label>
+            Sample input with postal code mask:
+            <input
+                name="test"
+                type="text"
+                {...maskProps}
+            />
+        </label>
+    );
+}
 
 function TelephoneDemo() {
     const [ value, setValue ] = useState('')

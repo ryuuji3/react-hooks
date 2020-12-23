@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, fireEvent, } from '@testing-library/react'
+import { render, } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import DateDemo from './DateDemo'
@@ -27,7 +27,7 @@ describe('Given an input with a date mask', () => {
             expect(input).toHaveValue('28 - MM - YYYY')
         })
 
-        it('should call onChange with raw value, and masked value', () => {
+        it('should call onChange with raw value', () => {
             expect(onChange).toHaveBeenCalledWith('28')
         })
 
@@ -44,7 +44,7 @@ describe('Given an input with a date mask', () => {
                 expect(input).toHaveValue('28 - 10 - 1995')
             })
 
-            it('should call onChange with raw value, and masked value', () => {
+            it('should call onChange with raw value', () => {
                 expect(onChange).toHaveBeenCalledWith('28101995')
             })
 
@@ -61,7 +61,7 @@ describe('Given an input with a date mask', () => {
                     expect(input).toHaveValue('28 - 10 - 199Y')
                 })
 
-                it('should call onChange with raw value, and masked value', () => {
+                it('should call onChange with raw value', () => {
                     expect(onChange).toHaveBeenCalledWith('2810199')
                 })
 

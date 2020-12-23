@@ -2,10 +2,10 @@ import fitInputValueIntoMask from './fitInputValueIntoMask'
 
 /**
  * 
- * @param mask 
  * @param value 
+ * @param mask 
  */
-function getNextCursorPosition(mask: string, value: string): number {
+function getNextCursorPosition(value: string, mask: string): number {
     const maskedValue = fitInputValueIntoMask(value, mask)
     const nextPlaceholder = maskedValue.indexOf('#')
 

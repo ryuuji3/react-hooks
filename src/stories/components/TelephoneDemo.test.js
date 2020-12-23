@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, fireEvent, } from '@testing-library/react'
+import { render, } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import TelephoneDemo from './TelephoneDemo'
@@ -28,7 +28,7 @@ describe('Given an input with a telephone mask', () => {
             expect(input).toHaveValue('(613)-___-____')
         })
 
-        it('should call onChange with raw value, and masked value', () => {
+        it('should call onChange with raw value', () => {
             expect(onChange).toHaveBeenCalledWith('613')
         })
 
@@ -45,7 +45,7 @@ describe('Given an input with a telephone mask', () => {
                 expect(input).toHaveValue('(613)-888-8888')
             })
 
-            it('should call onChange with raw value, and masked value', () => {
+            it('should call onChange with raw value', () => {
                 expect(onChange).toHaveBeenCalledWith('6138888888')
             })
 
@@ -62,7 +62,7 @@ describe('Given an input with a telephone mask', () => {
                     expect(input).toHaveValue('(613)-888-888_')
                 })
 
-                it('should call onChange with raw value, and masked value', () => {
+                it('should call onChange with raw value', () => {
                     expect(onChange).toHaveBeenCalledWith('613888888')
                 })
 

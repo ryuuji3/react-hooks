@@ -1,10 +1,11 @@
-import { useRef, useDebugValue, KeyboardEvent, ChangeEvent, } from 'react'
+import { useRef, KeyboardEvent, ChangeEvent, FocusEvent, } from 'react'
 
 import useCallbackAfterRender from './useCallbackAfterRender'
 import getMaskedValue from '../functions/getMaskedValue'
 import getNextCursorPosition from '../functions/getNextCursorPosition'
 
 import { getNumbersFromMaskedValue } from '../functions/regexHelpers'
+import useDebugMode from './useDebugMode'
 
 /**
  * 
@@ -20,16 +21,21 @@ export default function useMask<T = HTMLInputElement>(
     displayMask: string,
     options: MaskOptions = defaultOptions,
 ) {
+    if (mask instanceof RegExp) {
+        console.warn(`[useMask] RegExp mask not implemented yet.`)
+    }
+
     const inputRef = useRef<T>(null)
     const maskedValue = getMaskedValue(value, mask, displayMask)
     const placeholder = getMaskedValue('', mask, displayMask)
     const nextCursorPosition = getNextCursorPosition(value, mask)
     const scheduleAfterRender = useCallbackAfterRender()
 
-    useDebugValue(options.debug && {
+    useDebugMode(options.debug, {
+        mask,
+        displayMask,
         value,
         maskedValue,
-        nextCursorPosition,
     })
 
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
@@ -56,6 +62,19 @@ export default function useMask<T = HTMLInputElement>(
         setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition)
     }
 
+    function onKeyDown({ target}: KeyboardEvent<HTMLInputElement>) {
+        // make sure cursor is positioned correctly before input happens
+        // or else the character might not be in the right position
+        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition)
+    }
+
+    function onFocus({ target }: FocusEvent<HTMLInputElement>) {
+        // Work around in chrome to make sure focus sets cursor position
+        requestAnimationFrame(() => {
+            setCursorPositionForElement(target as HTMLInputElement, getNextCursorPosition(target.value, mask))
+        })
+    }
+
     return {
         ref: inputRef,
 
@@ -64,7 +83,9 @@ export default function useMask<T = HTMLInputElement>(
         placeholder,
 
         onChange: handleChange,
+        onKeyDown,
         onKeyUp,
+        onFocus,
     }
 }
 

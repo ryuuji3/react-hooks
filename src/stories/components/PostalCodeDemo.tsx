@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import useMask from '../..'
 
 
-export default function PostalCodeDemo({ onChange }) {
+export default function PostalCodeDemo({ onChange }: PostalCodeDemoProps) {
     const [ value, setValue ] = useState('')
 
-    function handleChange(value) {
+    function handleChange(value: string) {
         onChange?.(value)
         setValue(value)
     }
@@ -25,4 +25,8 @@ export default function PostalCodeDemo({ onChange }) {
             />
         </label>
     );
+}
+
+interface PostalCodeDemoProps {
+    onChange: (value: string) => void
 }

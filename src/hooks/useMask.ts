@@ -1,4 +1,4 @@
-import { useRef, useDebugValue, } from 'react'
+import { useRef, useDebugValue, KeyboardEvent, ChangeEvent, } from 'react'
 
 import useCallbackAfterRender from './useCallbackAfterRender'
 import getMaskedValue from '../functions/getMaskedValue'
@@ -13,14 +13,14 @@ import { getNumbersFromMaskedValue } from '../functions/regexHelpers'
  * @param mask 
  * @param displayMask 
  */
-export default function useMask(
+export default function useMask<T = HTMLInputElement>(
     value = '',
     onChange: (value: string) => void,
     mask: string | RegExp,
     displayMask: string,
     options: MaskOptions = defaultOptions,
 ) {
-    const inputRef = useRef(null)
+    const inputRef = useRef<T>(null)
     const maskedValue = getMaskedValue(value, mask, displayMask)
     const placeholder = getMaskedValue('', mask, displayMask)
     const nextCursorPosition = getNextCursorPosition(value, mask)
@@ -32,7 +32,7 @@ export default function useMask(
         nextCursorPosition,
     })
 
-    function handleChange({ target }: { target: HTMLInputElement }) {
+    function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
         const numbers = getNumbersFromMaskedValue(target.value)
         
         const newValue = (
@@ -52,8 +52,8 @@ export default function useMask(
 
     // For some reason, tests fail without this...
     // TODO: Figure out why this is necessary
-    function onKeyUp({ target }: { target: HTMLInputElement }) {
-        setCursorPositionForElement(target, nextCursorPosition)
+    function onKeyUp({ target }: KeyboardEvent<HTMLInputElement>) {
+        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition)
     }
 
     return {

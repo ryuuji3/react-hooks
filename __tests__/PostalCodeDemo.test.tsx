@@ -2,17 +2,16 @@ import React from 'react'
 import { render, } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import PostalCodeDemo from './PostalCodeDemo'
+import PostalCodeDemo from '../src/stories/components/PostalCodeDemo'
 
 
 describe.skip('Given an input with a telephone mask', () => {
-    let instance
-    let input
+    let input: HTMLInputElement
     let onChange = jest.fn()
 
     beforeEach(() => {
-        instance = render(<PostalCodeDemo onChange={onChange} />)
-        input = instance.getByLabelText(/postal code/i)
+        const { getByLabelText } = render(<PostalCodeDemo onChange={onChange} />)
+        input = getByLabelText(/postal code/i) as HTMLInputElement
     })
 
     it('should render placeholder with mask', () => {

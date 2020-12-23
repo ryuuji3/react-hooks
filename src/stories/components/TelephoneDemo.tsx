@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import useMask from '../..'
 
 
-export default function TelephoneDemo({ onChange }) {
+export default function TelephoneDemo({ onChange }: TelephoneDemoProps) {
     const [ value, setValue ] = useState('')
 
-    function handleChange(value) {
+    function handleChange(value: string) {
         onChange?.(value)
         setValue(value)
     }
@@ -26,4 +26,8 @@ export default function TelephoneDemo({ onChange }) {
             />
         </label>
     );
+}
+
+interface TelephoneDemoProps {
+    onChange: (value: string) => void
 }

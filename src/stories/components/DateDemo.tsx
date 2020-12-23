@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import useMask from '../..'
 
 
-export default function DateDemo({ onChange }) {
+export default function DateDemo({ onChange }: DateDemoProps) {
     const [ value, setValue ] = useState('')
 
-    function handleChange(value) {
+    function handleChange(value: string) {
         onChange?.(value)
         setValue(value)
     }
@@ -26,4 +26,8 @@ export default function DateDemo({ onChange }) {
             />
         </label>
     );
+}
+
+interface DateDemoProps { 
+    onChange: (value: string) => void
 }

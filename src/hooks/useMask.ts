@@ -14,7 +14,7 @@ import useDebugMode from './useDebugMode'
  * @param mask 
  * @param displayMask 
  */
-export default function useMask<T = HTMLInputElement>(
+export default function useMask(
     value = '',
     onChange: (value: string) => void,
     mask: string | RegExp,
@@ -25,7 +25,6 @@ export default function useMask<T = HTMLInputElement>(
         console.warn(`[useMask] RegExp mask not implemented yet.`)
     }
 
-    const inputRef = useRef<T>(null)
     const maskedValue = getMaskedValue(value, mask, displayMask)
     const placeholder = getMaskedValue('', mask, displayMask)
     const nextCursorPosition = getNextCursorPosition(value, mask)
@@ -38,6 +37,7 @@ export default function useMask<T = HTMLInputElement>(
         maskedValue,
     })
 
+    // Using an onChange instead of keyboard events because mobile devices don't fire key events
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
         const numbers = getNumbersFromMaskedValue(target.value)
         
@@ -76,8 +76,6 @@ export default function useMask<T = HTMLInputElement>(
     }
 
     return {
-        ref: inputRef,
-
         'data-value': value.length ? value: undefined,
         value: value.length ? maskedValue : placeholder, // render placeholder if they haven't entered anything
         placeholder,

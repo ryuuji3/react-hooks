@@ -48,7 +48,8 @@
     "test": "jest",
     "build": "tsc",
     "build-storybook": "build-storybook",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "lint": "eslint"
   },
   "eslintConfig": {
     "extends": "react-app"

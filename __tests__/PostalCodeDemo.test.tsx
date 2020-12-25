@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import PostalCodeDemo from '../.storybook/stories/components/PostalCodeDemo'
 
 
-describe('Given an input with a telephone mask', () => {
+describe.skip('Given an input with a telephone mask', () => {
     let input: HTMLInputElement
     let onChange = jest.fn()
 

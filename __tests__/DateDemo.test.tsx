@@ -2,7 +2,7 @@ import React from 'react'
 import { render, } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import DateDemo from '../src/stories/components/DateDemo'
+import DateDemo from '../.storybook/stories/components/DateDemo'
 
 describe('Given an input with a date mask', () => {
     let onChange = jest.fn()

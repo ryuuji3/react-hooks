@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import useMask from '../..'
+import useMask from '../../../src'
 
 
 export default function PostalCodeDemo({ onChange }: PostalCodeDemoProps) {
@@ -12,7 +12,7 @@ export default function PostalCodeDemo({ onChange }: PostalCodeDemoProps) {
     const maskProps = useMask(
         value,
         handleChange,
-        /[A-Z][\d][A-Z] [\d][A-Z][\d]/,
+        /[a-z][\d][a-z] [\d][a-z][\d]/,
         '___ ___',
     )
 

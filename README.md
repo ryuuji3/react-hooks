@@ -95,7 +95,7 @@ Arguments:
 
 | argument | description |
 | --- | --- |
-| `value` | is the string value without formatting. this will hold only numbers |
+| `value` | is the string value without formatting. this will hold only the raw values without formatting characters or spaces |
 | `onChange` | is the callback used to update value. you must supply local state or deferred state.
 | `mask` | is an array of regular expressions and formatting characters. 
 | `placeholder` | The third argument is a single character to use as the displayed placeholder instead of the regular expression, or it can be an entire string that matches the mask but with different characters are the placeholder. Your displayed mask must have the same length as the mask. |

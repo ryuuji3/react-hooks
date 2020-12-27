@@ -2,19 +2,20 @@ import React, { useState } from 'react'
 import useMask from '../../../src'
 
 
-export default function DateDemo({ onChange }: DateDemoProps) {
+export default function DateDemo({ onChange, debug }: DateDemoProps) {
     const [ value, setValue ] = useState('')
 
     function handleChange(value: string) {
         onChange?.(value)
         setValue(value)
     }
-    const maskProps = useMask(
+    const maskProps = useMask({
         value,
-        handleChange,
-        '## - ## - ####',
-        'DD - MM - YYYY',
-    )
+        onChange: handleChange,
+        mask: '## - ## - ####',
+        placeholder: 'DD - MM - YYYY',
+        debug,
+    })
 
     return (
         <label>
@@ -30,4 +31,5 @@ export default function DateDemo({ onChange }: DateDemoProps) {
 
 interface DateDemoProps { 
     onChange: (value: string) => void
+    debug?: boolean
 }

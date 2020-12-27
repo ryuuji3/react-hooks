@@ -17,12 +17,13 @@ npm install react-mask-hook
 import useMask from 'react-mask-hook'
 function PostalCodeDemo() {
     const [ value, setValue ] = useState('')
-    const maskProps = useMask(
+    const maskProps = useMask({
         value,
-        handleChange,
-        /[A-Z][\d][A-Z] [\d][A-Z][\d]/, // regular expression but every placeholder character needs grouped
-        '___ ___', // renders mask like ___ ___
-    )
+        onChange: handleChange,
+        // array of regexp and formatting characters
+        mask: [ /[a-z]/i, /[\d]/, /[a-z]/i, " ", /[\d]/, /[a-z]/i, /[\d]/ ], 
+        placeholder: '_', // renders all regexp with _ (ie. "___ ___")
+    })
 
     return (
         <label>
@@ -38,12 +39,12 @@ function PostalCodeDemo() {
 
 function TelephoneDemo() {
     const [ value, setValue ] = useState('')
-    const maskProps = useMask(
+    const maskProps = useMask({
         value,
-        setValue,
-        '###-###-####',
-        '_', // renders mask like ___-___-____
-    )
+        onChange: handleChange,
+        mask: '(###)-###-####', // deprecated syntax but still supported
+        placeholder: '_',
+    })
 
     return (
         <label>
@@ -59,12 +60,12 @@ function TelephoneDemo() {
 
 function DateDemo() {
     const [ value, setValue ] = useState('')
-    const maskProps = useMask(
+    const maskProps = useMask({
         value,
-        setValue,
-        '## - ## - ####',
-        'DD - MM - YYYY', // Will render the mask exactly like this (ie. the displayed mask)
-    )
+        onChange: handleChange,
+        mask: '## - ## - ####',
+        placeholder: 'DD - MM - YYYY', // will render mask exactly like this
+    })
 
     return (
         <label>

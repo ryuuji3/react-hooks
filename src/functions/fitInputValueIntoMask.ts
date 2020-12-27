@@ -1,30 +1,37 @@
-import { getMaskFromMaskedValue, getNumbersFromMaskedValue } from './regexHelpers'
+import { Mask } from '../hooks/useMask'
 
 
 /**
+ * Return partial mask with patterns replaced by values.  
  * 
  * @param value 
  * @param mask
  */
-function fitInputValueIntoMask(value: string, mask: string | RegExp): string {
-    return typeof mask === 'string'
-        ? fitInputValueIntoStringMask(value, mask)
-        : fitInputValueIntoRegExpMask(value, mask)
+function fitInputValueIntoMask(value: string, mask: Mask): Mask {
+    const valueCharacters = value.split('')
+
+    let abort = false
+
+    return valueCharacters.reduce((outputMask: Mask, currentCharacter) => {
+        if (abort) { // If we failed a match then don't attempt to place characters into mask.
+            return outputMask
+        }
+
+        const firstMaskPattern: RegExp | null = findFirstPattern(outputMask)
+
+        if (firstMaskPattern?.test(currentCharacter)) {
+            outputMask[outputMask.indexOf(firstMaskPattern)] = currentCharacter
+        } else {
+            abort = true
+        }
+
+        return outputMask
+    }, [...mask])
 }
 
-function fitInputValueIntoStringMask(value: string, mask: string): string {
-    const maskCharacters = getMaskFromMaskedValue(mask).split('')
-    const valueCharacters = getNumbersFromMaskedValue(value).split('')
-
-    // replace mask character with matching input character
-    maskCharacters.forEach((_, charIndex) => maskCharacters[charIndex] = valueCharacters[charIndex] ?? maskCharacters[charIndex])
-
-    // fit mask array back into mask, preserving spaces and special characters
-    return maskCharacters.reduce((result, maskCharacter) => result.replace(/#/, maskCharacter), mask)
-}
-
-function fitInputValueIntoRegExpMask(value: string, mask: RegExp): string {
-    return '' // TODO: Implement
+function findFirstPattern(mask: Mask): RegExp | null {
+    // TypeScript isn't smart enough to realize that this MUST be a RegExp or null, and can never be string.
+    return mask.find(characterOrPattern => characterOrPattern instanceof RegExp) as RegExp | null
 }
 
 export default fitInputValueIntoMask

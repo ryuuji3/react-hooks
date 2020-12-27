@@ -9,12 +9,12 @@ export default function TelephoneDemo({ onChange }: TelephoneDemoProps) {
         onChange?.(value)
         setValue(value)
     }
-    const maskProps = useMask(
+    const maskProps = useMask({
         value,
-        handleChange,
-        '(###)-###-####',
-        '(___)-___-____',
-    )
+        onChange: handleChange,
+        mask: '(###)-###-####',
+        placeholder: '(___)-___-____',
+    })
 
     return (
         <label>

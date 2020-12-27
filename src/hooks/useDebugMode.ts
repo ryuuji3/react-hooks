@@ -12,10 +12,10 @@ function useDebugMode(debug: boolean, values: DebugModeValues) {
     }
 }
 
-function getMask(mask: string | RegExp) {
+function getMask(mask: string | Array<String | RegExp>) {
     return typeof mask === 'string'
         ? `"${mask}"`
-        : `/${mask.source}/`
+        : mask.join(',')
 }
 
 function displayDebugInfo(values: DebugModeValues) {
@@ -23,14 +23,14 @@ function displayDebugInfo(values: DebugModeValues) {
 `useMask Debug Info:
 
 Mask: ${getMask(values.mask)}
-Display Mask: "${values.displayMask}"
+Display Mask: "${values.placeholder}"
 `
 )
 }
 
 interface DebugModeValues {
-    mask: string | RegExp
-    displayMask: string
+    mask: string | Array<String | RegExp>
+    placeholder: string
     value: string
     maskedValue: string
 }

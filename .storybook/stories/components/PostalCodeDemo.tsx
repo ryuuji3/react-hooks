@@ -9,12 +9,13 @@ export default function PostalCodeDemo({ onChange }: PostalCodeDemoProps) {
         onChange?.(value)
         setValue(value)
     }
-    const maskProps = useMask(
+    const maskProps = useMask({
         value,
-        handleChange,
-        /[a-z][\d][a-z] [\d][a-z][\d]/,
-        '___ ___',
-    )
+        onChange: handleChange,
+        mask: [ /[a-z]/i, /[\d]/, /[a-z]/i, " ", /[\d]/, /[a-z]/i, /[\d]/ ],
+        placeholder: '_',
+        debug: true
+    })
 
     return (
         <label>

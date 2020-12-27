@@ -9,12 +9,12 @@ export default function DateDemo({ onChange }: DateDemoProps) {
         onChange?.(value)
         setValue(value)
     }
-    const maskProps = useMask(
+    const maskProps = useMask({
         value,
-        handleChange,
-        '## - ## - ####',
-        'DD - MM - YYYY',
-    )
+        onChange: handleChange,
+        mask: '## - ## - ####',
+        placeholder: 'DD - MM - YYYY',
+    })
 
     return (
         <label>

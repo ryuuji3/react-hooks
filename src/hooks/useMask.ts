@@ -1,11 +1,12 @@
-import { useRef, KeyboardEvent, ChangeEvent, FocusEvent, } from 'react'
+import { KeyboardEvent, ChangeEvent, FocusEvent, useMemo, } from 'react'
 
 import useCallbackAfterRender from './useCallbackAfterRender'
 import getMaskedValue from '../functions/getMaskedValue'
 import getNextCursorPosition from '../functions/getNextCursorPosition'
 
-import { getNumbersFromMaskedValue } from '../functions/regexHelpers'
 import useDebugMode from './useDebugMode'
+import parseMask from '../functions/convertStringMaskToRegexp'
+import getPlaceholderFromMask from '../functions/getPlaceholderFromMask'
 
 /**
  * 
@@ -14,39 +15,42 @@ import useDebugMode from './useDebugMode'
  * @param mask 
  * @param displayMask 
  */
-export default function useMask(
+export function useMask({
     value = '',
-    onChange: (value: string) => void,
-    mask: string | RegExp,
-    displayMask: string,
-    options: MaskOptions = defaultOptions,
-) {
-    if (mask instanceof RegExp) {
-        console.warn(`[useMask] RegExp mask not implemented yet.`)
-    }
+    onChange,
+    debug = false,
+    ...props
+}: MaskProps): InputProps {
+    const mask = useMemo(() => parseMask(props.mask), [ props.mask ])
+    const placeholder = useMemo(() => getPlaceholderFromMask(mask, props.placeholder), [ mask, props.placeholder ])
 
-    const maskedValue = getMaskedValue(value, mask, displayMask)
-    const placeholder = getMaskedValue('', mask, displayMask)
-    const nextCursorPosition = getNextCursorPosition(value, mask)
+    const maskedValue = getMaskedValue(value, mask, placeholder)
+    const lastCursorPosition = getNextCursorPosition(value, mask)
     const scheduleAfterRender = useCallbackAfterRender()
 
-    useDebugMode(options.debug, {
+    useDebugMode(debug, {
         mask,
-        displayMask,
+        placeholder,
         value,
         maskedValue,
     })
 
     // Using an onChange instead of keyboard events because mobile devices don't fire key events
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
-        const numbers = getNumbersFromMaskedValue(target.value)
-        
-        const newValue = (
-            target.value.length < placeholder.length // deleted a mask symbol
-            && numbers.length >= value.length // a number was deleted so we don't need to remove another
-        )
-            ? numbers.slice(0, numbers.length - 1) // remove a character
-            : numbers
+        let newValue: string
+
+        if (target.value.length > maskedValue.length) {
+            const maskCharacterOrPattern = mask[lastCursorPosition]
+            const insertedCharacter = target.value.charAt(lastCursorPosition)
+
+            if (maskCharacterOrPattern instanceof RegExp && maskCharacterOrPattern.test(insertedCharacter)) {
+                newValue = `${value}${insertedCharacter}`
+            } else {
+                newValue = value // ignore
+            }
+        } else {
+            newValue = value.slice(0, value.length - 1) // Remove a character
+        }
 
         onChange(newValue)
 
@@ -59,13 +63,13 @@ export default function useMask(
     // For some reason, tests fail without this...
     // TODO: Figure out why this is necessary
     function onKeyUp({ target }: KeyboardEvent<HTMLInputElement>) {
-        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition)
+        setCursorPositionForElement(target as HTMLInputElement, lastCursorPosition)
     }
 
     function onKeyDown({ target}: KeyboardEvent<HTMLInputElement>) {
         // make sure cursor is positioned correctly before input happens
         // or else the character might not be in the right position
-        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition)
+        setCursorPositionForElement(target as HTMLInputElement, lastCursorPosition)
     }
 
     function onFocus({ target }: FocusEvent<HTMLInputElement>) {
@@ -87,12 +91,31 @@ export default function useMask(
     }
 }
 
-interface MaskOptions {
-    debug: boolean
+/**
+ * Props you need to pass to useMask()
+ */
+interface MaskProps {
+    value: string
+    onChange: (value: string) => void
+    mask: string | Mask
+    placeholder: string
+    debug?: boolean
 }
-const defaultOptions = {
-    debug: false,
+
+/**
+ * Props you need to spread onto your input.
+ */
+interface InputProps {
+    'data-value'?: string
+    value: string
+    placeholder: string
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void
+    onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
+    onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void
+    onFocus: (e: FocusEvent<HTMLInputElement>) => void
 }
+
+type Mask = Array<string | RegExp>
 
 /**
  * 
@@ -101,4 +124,11 @@ const defaultOptions = {
  */
 function setCursorPositionForElement(element: HTMLInputElement, cursorPosition: number): void {
     element?.setSelectionRange(cursorPosition, cursorPosition, 'forward')
+}
+
+export default useMask
+export type {
+    MaskProps,
+    Mask,
+    InputProps,
 }

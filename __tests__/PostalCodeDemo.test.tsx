@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import PostalCodeDemo from '../.storybook/stories/components/PostalCodeDemo'
 
 
-describe.skip('Given an input with a telephone mask', () => {
+describe('Given an input with a telephone mask', () => {
     let input: HTMLInputElement
     let onChange = jest.fn()
 
@@ -35,7 +35,7 @@ describe.skip('Given an input with a telephone mask', () => {
             expect(input.selectionStart).toBe('A1A ___'.indexOf('_'))
         })
 
-        describe.skip('When user enters the remaining numbers and letters into the mask', () => {
+        describe('When user enters the remaining numbers and letters into the mask', () => {
             beforeEach(() => {
                 userEvent.type(input, 'A1A 1A1')
             })

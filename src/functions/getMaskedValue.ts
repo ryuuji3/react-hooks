@@ -1,45 +1,25 @@
-import { getMaskFromMaskedValue } from './regexHelpers'
+import { Mask } from '../hooks/useMask'
 import fitInputValueIntoMask from './fitInputValueIntoMask'
 
 
 /**
+ * Assuming that any patterns that haven't been replaced with a value have not been fulfilled,
+ * replace the leftover patterns with their placeholder character.
  * 
  * @param value 
  * @param mask 
- * @param displayMask single character or exact length string
+ * @param placeholder exact length string
  */
-function getMaskedValue(value: string, mask: string | RegExp, displayMask: string): string {
-    return typeof mask === 'string'
-        ? getMaskedValueForStringMask(value, mask, displayMask)
-        : getMaskedValueForRegExpMask(value, mask, displayMask) 
-}
-
-function getMaskedValueForStringMask(value: string, mask: string, displayMask: string): string {
-    let maskCharacters = getMaskFromMaskedValue(mask).split('')
+function getMaskedValue(value: string, mask: Mask, placeholder: string): string {
     const maskedValue = fitInputValueIntoMask(value, mask)
 
-    if (displayMask.length === 1) {
-        return maskedValue.replace(/#/g, displayMask) // single mask character replacement
-    } else if (displayMask.length > 1) {
-        if (displayMask.length)
-        // assuming that the display mask matches the same format as the mask
-        // character differences must be substitutes for mask special characters like '#'
-        maskCharacters = maskedValue.split('')
+    return maskedValue.reduce((result, characterOrPattern, characterIndex) => {
+        if (characterOrPattern instanceof RegExp) {
+            result[characterIndex] = placeholder.charAt(characterIndex)
+        }
 
-        return maskCharacters.reduce((result, currentMaskCharacter, characterIndex) => {
-            if (currentMaskCharacter === '#') {
-                result[characterIndex] = displayMask[characterIndex] // replace placeholders with matching display mask character
-            }
-
-            return result
-        }, maskCharacters).join('')
-    }
-
-    return maskedValue // just use the mask as is if no mask character or display mask was specified
-}
-
-function getMaskedValueForRegExpMask(value: string, mask: RegExp, displayMask: string): string {
-    return '' // TODO: Implement
+        return result
+    }, maskedValue).join('')
 }
 
 export default getMaskedValue

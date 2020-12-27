@@ -7,6 +7,7 @@ import getNextCursorPosition from '../functions/getNextCursorPosition'
 import useDebugMode from './useDebugMode'
 import parseMask from '../functions/convertStringMaskToRegexp'
 import getPlaceholderFromMask from '../functions/getPlaceholderFromMask'
+import getNewValue from '../functions/getNewValue'
 
 /**
  * 
@@ -37,36 +38,14 @@ export function useMask({
 
     // Using an onChange instead of keyboard events because mobile devices don't fire key events
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
-        let newValue: string
-
-        if (target.value.length > maskedValue.length) {
-            const maskCharacterOrPattern = mask[lastCursorPosition]
-            const insertedCharacter = target.value.charAt(lastCursorPosition)
-
-            if (maskCharacterOrPattern instanceof RegExp && maskCharacterOrPattern.test(insertedCharacter)) {
-                newValue = `${value}${insertedCharacter}`
-                log(`[useMask] inserted character: ${insertedCharacter}`)
-            } else {
-                newValue = value // ignore
-                log(`[useMask] ignored character: ${insertedCharacter}`)
-            }
-        } else {
-            if (value.length === 0) {
-                const maskCharacterOrPattern = mask[lastCursorPosition]
-                const insertedCharacter = target.value.charAt(0)
-
-                if (maskCharacterOrPattern instanceof RegExp && maskCharacterOrPattern.test(insertedCharacter)) {
-                    newValue = insertedCharacter
-                    log(`[useMask] inserted character: ${insertedCharacter}`)
-                } else {
-                    newValue = value // ignore
-                    log(`[useMask] ignored character: ${insertedCharacter}`)
-                }
-            } else {
-                newValue = value.slice(0, value.length - 1) // Remove a character
-                log(`[useMask] removed character`)
-            }
-        }
+        let newValue = getNewValue({
+            inputValue: target.value,
+            maskedValue,
+            oldValue: value,
+            mask,
+            lastCursorPosition,
+            log,
+        })
 
         onChange(newValue)
 

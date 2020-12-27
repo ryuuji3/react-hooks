@@ -7,7 +7,6 @@ import { Mask } from '../hooks/useMask'
  */
 function parseMask(mask: string | Mask) {
     if (typeof mask === 'string') {
-        console.warn('string masks are deprecated, please use the regexp format.')
         return convertStringMaskToRegExpMask(mask)
     } else {
         return mask // it's already the correct format

@@ -23,17 +23,17 @@ export function useMask({
 }: MaskProps): InputProps {
     const mask = useMemo(() => parseMask(props.mask), [ props.mask ])
     const placeholder = useMemo(() => getPlaceholderFromMask(mask, props.placeholder), [ mask, props.placeholder ])
-
     const maskedValue = getMaskedValue(value, mask, placeholder)
-    const lastCursorPosition = getNextCursorPosition(value, mask)
-    const scheduleAfterRender = useCallbackAfterRender()
-
-    useDebugMode(debug, {
+    
+    const { log } = useDebugMode(debug, {
         mask,
         placeholder,
         value,
         maskedValue,
     })
+    
+    const lastCursorPosition = getNextCursorPosition(value, mask, log)
+    const scheduleAfterRender = useCallbackAfterRender()
 
     // Using an onChange instead of keyboard events because mobile devices don't fire key events
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
@@ -45,18 +45,34 @@ export function useMask({
 
             if (maskCharacterOrPattern instanceof RegExp && maskCharacterOrPattern.test(insertedCharacter)) {
                 newValue = `${value}${insertedCharacter}`
+                log(`[useMask] inserted character: ${insertedCharacter}`)
             } else {
                 newValue = value // ignore
+                log(`[useMask] ignored character: ${insertedCharacter}`)
             }
         } else {
-            newValue = value.slice(0, value.length - 1) // Remove a character
+            if (value.length === 0) {
+                const maskCharacterOrPattern = mask[lastCursorPosition]
+                const insertedCharacter = target.value.charAt(0)
+
+                if (maskCharacterOrPattern instanceof RegExp && maskCharacterOrPattern.test(insertedCharacter)) {
+                    newValue = insertedCharacter
+                    log(`[useMask] inserted character: ${insertedCharacter}`)
+                } else {
+                    newValue = value // ignore
+                    log(`[useMask] ignored character: ${insertedCharacter}`)
+                }
+            } else {
+                newValue = value.slice(0, value.length - 1) // Remove a character
+                log(`[useMask] removed character`)
+            }
         }
 
         onChange(newValue)
 
         // onChange is asynchronous so update cursor after it re-renders
         scheduleAfterRender(() => {
-            setCursorPositionForElement(target, getNextCursorPosition(newValue, mask))
+            setCursorPositionForElement(target, getNextCursorPosition(newValue, mask, log))
         })
     }
 
@@ -75,13 +91,13 @@ export function useMask({
     function onFocus({ target }: FocusEvent<HTMLInputElement>) {
         // Work around in chrome to make sure focus sets cursor position
         requestAnimationFrame(() => {
-            setCursorPositionForElement(target as HTMLInputElement, getNextCursorPosition(target.value, mask))
+            setCursorPositionForElement(target as HTMLInputElement, getNextCursorPosition(target.value, mask, log))
         })
     }
 
     return {
         'data-value': value.length ? value: undefined,
-        value: value.length ? maskedValue : placeholder, // render placeholder if they haven't entered anything
+        value: value.length ? maskedValue : '',
         placeholder,
 
         onChange: handleChange,

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import useMask from '../../../src'
 
 
-export default function PostalCodeDemo({ onChange }: PostalCodeDemoProps) {
+export default function PostalCodeDemo({ onChange, debug }: PostalCodeDemoProps) {
     const [ value, setValue ] = useState('')
 
     function handleChange(value: string) {
@@ -14,7 +14,7 @@ export default function PostalCodeDemo({ onChange }: PostalCodeDemoProps) {
         onChange: handleChange,
         mask: [ /[a-z]/i, /[\d]/, /[a-z]/i, " ", /[\d]/, /[a-z]/i, /[\d]/ ],
         placeholder: '_',
-        debug: true
+        debug,
     })
 
     return (
@@ -30,4 +30,5 @@ export default function PostalCodeDemo({ onChange }: PostalCodeDemoProps) {
 
 interface PostalCodeDemoProps {
     onChange: (value: string) => void
+    debug?: boolean
 }

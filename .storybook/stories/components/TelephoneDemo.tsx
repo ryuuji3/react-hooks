@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import useMask from '../../../src'
 
 
-export default function TelephoneDemo({ onChange }: TelephoneDemoProps) {
+export default function TelephoneDemo({ onChange, debug }: TelephoneDemoProps) {
     const [ value, setValue ] = useState('')
 
     function handleChange(value: string) {
@@ -13,7 +13,8 @@ export default function TelephoneDemo({ onChange }: TelephoneDemoProps) {
         value,
         onChange: handleChange,
         mask: '(###)-###-####',
-        placeholder: '(___)-___-____',
+        placeholder: '_',
+        debug,
     })
 
     return (
@@ -30,4 +31,5 @@ export default function TelephoneDemo({ onChange }: TelephoneDemoProps) {
 
 interface TelephoneDemoProps {
     onChange: (value: string) => void
+    debug?: boolean
 }

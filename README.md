@@ -17,6 +17,11 @@ npm install react-mask-hook
 import useMask from 'react-mask-hook'
 function PostalCodeDemo() {
     const [ value, setValue ] = useState('')
+
+    function handleChange(value) {
+        setValue(value.toUpperCase()) // render as uppercase
+    }
+
     const maskProps = useMask({
         value,
         onChange: handleChange,
@@ -41,7 +46,7 @@ function TelephoneDemo() {
     const [ value, setValue ] = useState('')
     const maskProps = useMask({
         value,
-        onChange: handleChange,
+        onChange: setValue,
         mask: '(###)-###-####', // deprecated syntax but still supported
         placeholder: '_',
     })
@@ -62,7 +67,7 @@ function DateDemo() {
     const [ value, setValue ] = useState('')
     const maskProps = useMask({
         value,
-        onChange: handleChange,
+        onChange: setValue,
         mask: '## - ## - ####',
         placeholder: 'DD - MM - YYYY', // will render mask exactly like this
     })
@@ -83,7 +88,7 @@ function DateDemo() {
 ### API
 
 ```js
-const { value, placeholder, onChange, onKeyUp, onKeyDown, onFocus } = useMask(value, onChange, mask, maskCharacterOrDisplayMask)
+const { value, placeholder, onChange, onKeyUp, onKeyDown, onFocus } = useMask({ value, onChange, mask, placeholder })
 ```
 
 Arguments:
@@ -92,7 +97,7 @@ Arguments:
 | --- | --- |
 | `value` | is the string value without formatting. this will hold only numbers |
 | `onChange` | is the callback used to update value. you must supply local state or deferred state.
-| `mask` | is what should be displayed and with # as a placeholder for the numbers to be input. 
-| `maskCharacterOrDisplayMask` | The third argument is a single character to use as the displayed placeholder instead of #, or it can be an entire string that matches the mask but with different characters are the placeholder. Your displayed mask must have the same length as the mask. |
+| `mask` | is an array of regular expressions and formatting characters. 
+| `placeholder` | The third argument is a single character to use as the displayed placeholder instead of the regular expression, or it can be an entire string that matches the mask but with different characters are the placeholder. Your displayed mask must have the same length as the mask. |
 
 You may opt-out of placeholder, but the other properties returned by `useMask` are required and should be bound to the input in order for the masking to function as expected.

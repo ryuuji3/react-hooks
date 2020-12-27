@@ -10,12 +10,16 @@ function useDebugMode(debug: boolean, values: DebugModeValues) {
         console.log(displayDebugInfo(values))
         hasDisplayedDebugInfo.current = true
     }
+
+    return {
+        log: log(debug),
+    }
 }
 
-function getMask(mask: string | RegExp) {
+function getMask(mask: string | Array<String | RegExp>) {
     return typeof mask === 'string'
         ? `"${mask}"`
-        : `/${mask.source}/`
+        : mask.join(',')
 }
 
 function displayDebugInfo(values: DebugModeValues) {
@@ -23,16 +27,49 @@ function displayDebugInfo(values: DebugModeValues) {
 `useMask Debug Info:
 
 Mask: ${getMask(values.mask)}
-Display Mask: "${values.displayMask}"
+Display Mask: "${values.placeholder}"
 `
 )
 }
 
+enum LogLevel {
+    INFO = 'log',
+    WARN = 'warn',
+    ERROR = 'error',
+}
+
+function log(debug: boolean): Logger {
+    return (message: string, level: LogLevel = LogLevel.INFO) => {
+        if (!debug) {
+            return
+        }
+
+        switch(level) {
+            case LogLevel.WARN:
+                console.warn(message)
+                break
+            case LogLevel.ERROR:
+                console.error(message)
+                break
+            case LogLevel.INFO:
+            default:
+                console.log(message)
+                break
+        }
+    }
+}
+
+type Logger = (message: string, level?: LogLevel) => void
+
 interface DebugModeValues {
-    mask: string | RegExp
-    displayMask: string
+    mask: string | Array<String | RegExp>
+    placeholder: string
     value: string
     maskedValue: string
 }
 
 export default useDebugMode
+export type {
+    LogLevel,
+    Logger,
+}

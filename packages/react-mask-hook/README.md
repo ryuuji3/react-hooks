@@ -1,4 +1,4 @@
-![Run tests](https://github.com/ryuuji3/react-mask-hook/workflows/Run%20tests/badge.svg?branch=master)
+![Run tests](https://github.com/ryuuji3/react-hooks/workflows/Run%20tests/badge.svg?branch=dev)
 
 react-mask-hook
 ---

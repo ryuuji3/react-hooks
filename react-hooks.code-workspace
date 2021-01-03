@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "root"
+		},
+		{
+			"path": "packages/react-mask-hook",
+			"name": "📦 react-mask-hook"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"packages": true,
+			"**/node_modules": true
+		},
+		"npm.packageManager": "yarn",
+		"jest.pathToJest": "yarn test --",
+	},
+	"extensions": {
+		"recommendations": [
+			"orta.vscode-jest",
+			"dbaeumer.vscode-eslint",
+			"eamodio.gitlens",
+			"folke.vscode-monorepo-workspace",
+			"wayou.vscode-todo-highlight",
+			"github.vscode-pull-request-github"
+		]
+	}
+}

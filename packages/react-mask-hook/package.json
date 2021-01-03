@@ -1,6 +1,6 @@
 {
     "name": "@ryuuji3/react-mask-hook",
-    "version": "0.5.3",
+    "version": "1.0.0",
     "private": false,
     "description": "A simple masking library as a react hook",
     "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
@@ -18,7 +18,7 @@
         "test": "jest",
         "build": "tsc",
         "build-storybook": "build-storybook",
-        "prepare": "npm run build",
+        "prepack": "yarn build",
         "lint": "eslint"
     },
     "devDependencies": {

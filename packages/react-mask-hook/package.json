@@ -1,6 +1,6 @@
 {
     "name": "@ryuuji3/react-mask-hook",
-    "version": "0.5.2",
+    "version": "0.5.3",
     "private": false,
     "description": "A simple masking library as a react hook",
     "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
@@ -21,7 +21,6 @@
         "prepare": "npm run build",
         "lint": "eslint"
     },
-    "dependencies": {},
     "devDependencies": {
         "@babel/cli": "^7.12.10",
         "@babel/core": "^7.12.10",

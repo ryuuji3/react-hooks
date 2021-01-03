@@ -10,7 +10,7 @@
         "test": "jest",
         "lint": "lerna run lint",
         "build": "lerna run build",
-        "release": "lerna version --conventional-commits --create-release github",
+        "release": "lerna version --conventional-commits",
         "publish:all": "lerna publish",
         "package:fix-mismatches": "syncpack fix-mismatches",
         "package:list-mismatches": "syncpack list-mismatches",

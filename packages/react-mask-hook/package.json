@@ -1,5 +1,5 @@
 {
-    "name": "react-mask-hook",
+    "name": "@ryuuji3/react-mask-hook",
     "version": "0.5.2",
     "private": false,
     "description": "A simple masking library as a react hook",
@@ -65,5 +65,8 @@
     ],
     "homepage": "https://github.com/ryuuji3/react-mask-hook",
     "main": "lib/index.js",
-    "types": "lib/index.d.ts"
+    "types": "lib/index.d.ts",
+    "publishConfig": {
+        "access": "public"
+    }
 }

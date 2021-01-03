@@ -1,34 +1,46 @@
 import React, { useState } from 'react'
-import useMask from '../../../src'
+
+import useMask, { Mask } from '../../../src/index'
 
 
-export default function PostalCodeDemo({ onChange, debug }: PostalCodeDemoProps) {
+function Demo({ label, onChange, debug, mask, placeholder, }: DemoProps) {
     const [ value, setValue ] = useState('')
 
     function handleChange(value: string) {
         onChange?.(value)
         setValue(value)
     }
+
     const maskProps = useMask({
         value,
         onChange: handleChange,
-        mask: [ /[a-z]/i, /[\d]/, /[a-z]/i, " ", /[\d]/, /[a-z]/i, /[\d]/ ],
-        placeholder: '_',
+        mask,
+        placeholder,
         debug,
     })
 
     return (
-        <label>
-            Sample input with postal code mask:
+        <div>
+            <label htmlFor="test" style={{
+                display: 'block',
+            }}>
+                {label}
+            </label>
             <input
+                id="test"
                 name="test"
                 {...maskProps}
             />
-        </label>
+        </div>
     );
 }
 
-interface PostalCodeDemoProps {
+interface DemoProps {
+    label: string
     onChange: (value: string) => void
     debug?: boolean
+    mask: Mask,
+    placeholder: string
 }
+
+export default Demo

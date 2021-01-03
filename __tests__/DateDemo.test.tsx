@@ -2,7 +2,7 @@ import React from 'react'
 import { render, } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import DateDemo from '../.storybook/stories/components/DateDemo'
+import { DateDemo } from '../.storybook/stories/Demo.stories'
 
 describe('Given an input with a date mask', () => {
     let onChange = jest.fn()
@@ -10,7 +10,7 @@ describe('Given an input with a date mask', () => {
 
     beforeEach(() => {
         const { getByLabelText } = render(<DateDemo onChange={onChange} />)
-        input = getByLabelText(/date mask/i) as HTMLInputElement
+        input = getByLabelText(/date/i) as HTMLInputElement
     })
 
     it('should render placeholder with mask', () => {

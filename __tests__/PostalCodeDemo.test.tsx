@@ -2,7 +2,7 @@ import React from 'react'
 import { render, } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import PostalCodeDemo from '../.storybook/stories/components/PostalCodeDemo'
+import { PostalCodeDemo } from '../.storybook/stories/Demo.stories'
 
 
 describe('Given an input with a telephone mask', () => {

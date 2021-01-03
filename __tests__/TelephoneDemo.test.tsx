@@ -2,7 +2,7 @@ import React from 'react'
 import { render, } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import TelephoneDemo from '../.storybook/stories/components/TelephoneDemo'
+import { TelephoneDemo } from '../.storybook/stories/Demo.stories'
 
 
 describe('Given an input with a telephone mask', () => {
@@ -11,7 +11,7 @@ describe('Given an input with a telephone mask', () => {
 
     beforeEach(() => {
         const { getByLabelText } = render(<TelephoneDemo onChange={onChange} />)
-        input = getByLabelText(/phone mask/i) as HTMLInputElement
+        input = getByLabelText(/phone number/i) as HTMLInputElement
     })
 
     it('should render placeholder with mask', () => {

@@ -8,13 +8,14 @@ An input masking lib designed to be testable and with simplicity in mind.
 ### Installation:
 
 ```bash
-npm install react-mask-hook
+npm install @ryuuji3/react-mask-hook
 ```
 
 ### Sample Usage:
 
 ```js
-import useMask from 'react-mask-hook'
+import useMask from '@ryuuji3/react-mask-hook'
+
 function PostalCodeDemo() {
     const [ value, setValue ] = useState('')
 

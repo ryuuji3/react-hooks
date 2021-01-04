@@ -5,6 +5,6 @@
 
 Monorepo with some useful input-based react hooks.
 
-- [react-mask-hook](https://github.com/ryuuji3/react-hooks/tree/master/packages/react-mask-hook)
+- [@ryuuji3/react-mask-hook](https://github.com/ryuuji3/react-hooks/tree/master/packages/react-mask-hook)
 Regexp-based input masking.
 - More planned...

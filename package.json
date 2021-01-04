@@ -11,7 +11,7 @@
         "lint": "lerna run lint",
         "build": "lerna run build",
         "release": "lerna version --conventional-commits",
-        "publish:all": "lerna publish",
+        "publish:all": "lerna publish from-git -y",
         "package:fix-mismatches": "syncpack fix-mismatches",
         "package:list-mismatches": "syncpack list-mismatches",
         "package:format": "syncpack format"

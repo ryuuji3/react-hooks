@@ -12,7 +12,7 @@
         "hooks",
         "react"
     ],
-    "repository": "ryuuji3/react-mask-hook",
+    "repository": "https://github.com/ryuuji3/react-hooks",
     "scripts": {
         "start": "start-storybook -p 6006",
         "test": "jest",

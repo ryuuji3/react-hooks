@@ -23,7 +23,7 @@ jobs:
           scope: '@ryuuji3'
       - run: yarn install
       - run: yarn test
-      - run: yarn publish:all
+      - run: yarn publish:all --registry=https://npm.pkg.github.com
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
   publish-npm:

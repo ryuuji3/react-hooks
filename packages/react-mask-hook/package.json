@@ -1,6 +1,6 @@
 {
     "name": "@ryuuji3/react-mask-hook",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "private": false,
     "description": "A simple masking library as a react hook",
     "author": "ryuuji3 <mori.ryuuji3@gmail.com>",

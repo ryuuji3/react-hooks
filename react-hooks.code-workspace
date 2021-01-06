@@ -6,8 +6,12 @@
 		},
 		{
 			"path": "packages/react-mask-hook",
-			"name": "📦 react-mask-hook"
-		}
+			"name": "📦 @ryuuji3/react-mask-hook"
+		},
+		{
+			"path": "packages/use-callback-after-render",
+			"name": "📦 @ryuuji3/use-callback-after-render"
+		},
 	],
 	"settings": {
 		"files.exclude": {
@@ -16,7 +20,7 @@
 			"**/.hg": true,
 			"**/CVS": true,
 			"**/.DS_Store": true,
-			"packages": true,
+			"packages/*/*": true,
 			"**/node_modules": true,
 			"**/lib": true,
 		},

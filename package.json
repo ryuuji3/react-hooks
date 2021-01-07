@@ -7,7 +7,7 @@
     "repository": "https://github.com/ryuuji3/react-hooks",
     "scripts": {
         "bootstrap": "lerna bootstrap",
-        "postinstall": "yarn run bootstrap",
+        "postinstall": "yarn run build && yarn run bootstrap",
         "test": "jest",
         "lint": "lerna run lint",
         "build": "lerna run build",

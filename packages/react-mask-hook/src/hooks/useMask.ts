@@ -1,6 +1,6 @@
 import { KeyboardEvent, ChangeEvent, FocusEvent, useMemo, } from 'react'
 
-import useCallbackAfterRender from './useCallbackAfterRender'
+import useCallbackAfterRender from '@ryuuji3/use-callback-after-render'
 import getMaskedValue from '../functions/getMaskedValue'
 import getNextCursorPosition from '../functions/getNextCursorPosition'
 

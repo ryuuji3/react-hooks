@@ -19,4 +19,3 @@ function useCallbackAfterRender(): Callback {
 type Callback = (callback: () => void) => void
 
 export default useCallbackAfterRender
-export type { Callback }

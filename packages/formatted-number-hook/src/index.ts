@@ -1,5 +1,3 @@
-function useFormattedNumber() {
-
-}
+import useFormattedNumber from './hooks/useFormattedNumber'
 
 export default useFormattedNumber

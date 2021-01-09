@@ -9,6 +9,10 @@
 			"name": "📦 @ryuuji3/react-mask-hook"
 		},
 		{
+			"path": "packages/formatted-number-hook",
+			"name": "📦 @ryuuji3/formatted-number-hook"
+		},
+		{
 			"path": "packages/use-callback-after-render",
 			"name": "📦 @ryuuji3/use-callback-after-render"
 		},

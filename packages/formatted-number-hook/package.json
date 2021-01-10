@@ -20,7 +20,9 @@
         "prepack": "yarn build",
         "lint": "eslint"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@ryuuji3/use-callback-after-render": "^0.1.0"
+    },
     "devDependencies": {
         "@babel/cli": "^7.12.10",
         "@babel/core": "^7.12.10",

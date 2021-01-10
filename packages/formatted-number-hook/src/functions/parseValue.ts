@@ -5,7 +5,7 @@ function parseValue(number: string | null): number | null {
 
     const parsedValue = parseFloat(number)
 
-    if (Number.isNaN(parseValue)) {
+    if (Number.isNaN(parsedValue)) {
         return null
     }
 

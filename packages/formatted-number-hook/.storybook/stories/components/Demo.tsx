@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import useFormattedNumber from '../../../src/index'
 
 
-function Demo({ label, initialValue, onChange }: DemoProps) {
+function Demo({ label, initialValue, onChange, ...options }: DemoProps) {
     const [ number, setNumber ] = useState(initialValue)
 
     useEffect(() => {
@@ -18,6 +18,7 @@ function Demo({ label, initialValue, onChange }: DemoProps) {
     const inputProps = useFormattedNumber({
         value: number,
         onChange: handleChange,
+        ...options
     })
 
     return (

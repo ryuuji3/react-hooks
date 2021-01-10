@@ -53,9 +53,9 @@ test('should render integer ignoring invalid input', () => {
     const { getByLabelText } = render(<Integer initialValue={null} onChange={jest.fn()} />)
     const input = getByLabelText(/number/i)
 
-    userEvent.type(input, '123aaaaa.5.2')
+    userEvent.type(input, '1203aaaaa.5.2')
 
-    expect(getByLabelText(/number/i)).toHaveDisplayValue('12352')
+    expect(getByLabelText(/number/i)).toHaveDisplayValue('120352')
 })
 
 test('should render number initial value value as integer', () => {

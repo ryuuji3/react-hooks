@@ -1,10 +1,15 @@
 // @ts-nocheck
 import React from 'react'
 
+import { FormattedNumberOptions } from '../../src/index'
 import Demo from './components/Demo'
 
 const story = {
     title: 'Demo',
+    args: {
+        initialValue: '',
+        nullable: true,
+    }
 }
 
 export default story
@@ -14,23 +19,20 @@ function Template(args: StoryProps) {
 }
 
 export const Integer = Template.bind({ })
-Integer.args = {
-    initialValue: '',
-}
 Integer.parameters = {
     onChange: () => {}, // Only needed for tests
 }
 
 export const Float = Template.bind({ })
 Float.args = {
-    initialValue: '',
+    maxFractionDigits: 1,
+    minFractionDigits: 1,
 }
 Float.parameters = {
     onChange: () => {}, // Only needed for tests
 }
 
-interface StoryProps {
-    label: string
-    value: number | string | null
+interface StoryProps extends Partial<FormattedNumberOptions> {
+    initialValue: number | string | null
     onChange: (value: number | null) => void
 }

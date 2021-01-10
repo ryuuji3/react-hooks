@@ -1,15 +1,18 @@
-import parseValue from "./parseValue"
+import { FormattedNumberOptions } from '../hooks/useFormattedNumber'
+import getInputValue from "./getInputValue"
+import parseValue from './parseValue'
 
-function formatNumber(number: number | string | null): string {
-    if (number === null || number === '') {
+function formatNumber(number: number | string | null, options: FormattedNumberOptions): string {
+    if (options.nullable && (number === null || number === '')) {
         return ''
     }
 
-    if (typeof number === 'number') {
-        return number.toFixed(0) // only handle integers right now.
-    } else {
-        return formatNumber(parseValue(number))
-    }
+    const parsedValue = typeof number === 'string'
+        ? parseValue(number)
+        : number
+    const stringValue = parsedValue?.toString() ?? ''
+
+    return getInputValue(stringValue, stringValue, options)
 }
 
 export default formatNumber

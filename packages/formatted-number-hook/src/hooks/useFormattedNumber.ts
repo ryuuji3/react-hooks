@@ -5,23 +5,23 @@ function useFormattedNumber({
     value,
     onChange,
 }: FormattedNumberProps): InputProps {
-    const formattedValue = value.toString()
+    const formattedValue = value?.toString() ?? ''
 
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
-        const newValue = parseFloat(target.value)
+        const newValue = parseFloat(target.value) 
 
-        onChange(newValue)
+        onChange(Number.isNaN(newValue) ? value : newValue)
     }
     
     return {
-        value: formattedValue.length ? formattedValue : '',
+        value: formattedValue?.length ? formattedValue : '',
         onChange: handleChange,
     }
 }
 
 interface FormattedNumberProps {
-    value: number
-    onChange: (value: number) => void
+    value: number | null
+    onChange: (value: number | null) => void
 }
 
 interface InputProps {

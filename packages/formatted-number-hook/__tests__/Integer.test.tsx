@@ -22,7 +22,7 @@ test('should render input value as integer if user enters integers', () => {
     expect(getByLabelText(/number/i)).toHaveDisplayValue('123')
 })
 
-test('should render input value as integer if user backspaces', () => {
+test('should delete number if user presses backspace once', () => {
     const { getByLabelText } = render(<Integer initialValue={123} onChange={jest.fn()} />)
     const input = getByLabelText(/number/i)
 
@@ -31,7 +31,16 @@ test('should render input value as integer if user backspaces', () => {
     expect(getByLabelText(/number/i)).toHaveDisplayValue('12')
 })
 
-test.skip('should render decimal input as integer', () => {
+test('should delete number if user presses deletes entire value', () => {
+    const { getByLabelText } = render(<Integer initialValue={123} onChange={jest.fn()} />)
+    const input = getByLabelText(/number/i)
+
+    userEvent.type(input, '{backspace}{backspace}{backspace}')
+
+    expect(getByLabelText(/number/i)).toHaveDisplayValue('')
+})
+
+test('should render decimal input as integer', () => {
     const { getByLabelText } = render(<Integer initialValue={null} onChange={jest.fn()} />)
     const input = getByLabelText(/number/i)
 
@@ -40,7 +49,7 @@ test.skip('should render decimal input as integer', () => {
     expect(getByLabelText(/number/i)).toHaveDisplayValue('123')
 })
 
-test.skip('should render integer ignoring invalid input', () => {
+test('should render integer ignoring invalid input', () => {
     const { getByLabelText } = render(<Integer initialValue={null} onChange={jest.fn()} />)
     const input = getByLabelText(/number/i)
 

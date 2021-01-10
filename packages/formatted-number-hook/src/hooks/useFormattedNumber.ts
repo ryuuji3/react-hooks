@@ -11,6 +11,11 @@ function useFormattedNumber({
     const formattedValue = formatNumber(value)
 
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
+        if (target.value === '') {
+            onChange(null)
+            return
+        }
+
         const newValue = parseValue(target.value)
 
         onChange(newValue ?? value as number) // value will always be a number

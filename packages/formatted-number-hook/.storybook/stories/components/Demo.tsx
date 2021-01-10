@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import useFormattedNumber from '../../../src/index'
 
 
-function Demo({ label, value, onChange }: DemoProps) {
-    const [ number, setNumber ] = useState(value)
+function Demo({ label, initialValue, onChange }: DemoProps) {
+    const [ number, setNumber ] = useState(initialValue)
+
+    useEffect(() => {
+        setNumber(initialValue)
+    }, [ initialValue ])
 
     function handleChange(newValue: number | null) {
         onChange?.(newValue)
@@ -34,7 +38,7 @@ function Demo({ label, value, onChange }: DemoProps) {
 
 interface DemoProps {
     label: string
-    value: number | string | null
+    initialValue: number | string | null
     onChange: (value: number | null) => void
     debug?: boolean
 }

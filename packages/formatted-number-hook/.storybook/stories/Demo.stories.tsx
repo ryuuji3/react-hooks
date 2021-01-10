@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 
 import Demo from './components/Demo'
@@ -8,23 +9,28 @@ const story = {
 
 export default story
 
-export const Integer = ({ onChange, value }: StoryProps) => (
-    <Demo
-        label="Enter an integer"
-        value={value}
-        onChange={onChange}
-    />
-)
+function Template(args: StoryProps) {
+    return <Demo {...args} label="Enter a number" />
+}
 
-export const Float = ({ onChange, value }: StoryProps) => (
-    <Demo
-        label="Enter a decimal number"
-        value={value}
-        onChange={onChange}
-    />
-)
+export const Integer = Template.bind({ })
+Integer.args = {
+    initialValue: '',
+}
+Integer.parameters = {
+    onChange: () => {}, // Only needed for tests
+}
+
+export const Float = Template.bind({ })
+Float.args = {
+    initialValue: '',
+}
+Float.parameters = {
+    onChange: () => {}, // Only needed for tests
+}
 
 interface StoryProps {
+    label: string
     value: number | string | null
     onChange: (value: number | null) => void
 }

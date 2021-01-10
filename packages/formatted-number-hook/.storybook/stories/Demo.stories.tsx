@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 import Demo from './components/Demo'
 
@@ -25,6 +25,6 @@ export const Float = ({ onChange, value }: StoryProps) => (
 )
 
 interface StoryProps {
-    value: number | null
+    value: number | string | null
     onChange: (value: number | null) => void
 }

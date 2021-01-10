@@ -1,26 +1,29 @@
 import { ChangeEvent } from 'react'
 
+import formatNumber from '../functions/formatNumber'
+import parseValue from '../functions/parseValue'
+
 
 function useFormattedNumber({
     value,
     onChange,
 }: FormattedNumberProps): InputProps {
-    const formattedValue = value?.toString() ?? ''
+    const formattedValue = formatNumber(value)
 
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
-        const newValue = parseFloat(target.value) 
+        const newValue = parseValue(target.value)
 
-        onChange(Number.isNaN(newValue) ? value : newValue)
+        onChange(newValue ?? value as number) // value will always be a number
     }
     
     return {
-        value: formattedValue?.length ? formattedValue : '',
+        value: formattedValue,
         onChange: handleChange,
     }
 }
 
 interface FormattedNumberProps {
-    value: number | null
+    value: number | string | null
     onChange: (value: number | null) => void
 }
 

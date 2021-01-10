@@ -34,7 +34,7 @@ function Demo({ label, value, onChange }: DemoProps) {
 
 interface DemoProps {
     label: string
-    value: number | null
+    value: number | string | null
     onChange: (value: number | null) => void
     debug?: boolean
 }

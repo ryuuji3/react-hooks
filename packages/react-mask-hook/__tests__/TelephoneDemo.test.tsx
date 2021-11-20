@@ -4,71 +4,35 @@ import userEvent from '@testing-library/user-event'
 
 import { TelephoneDemo } from '../.storybook/stories/Demo.stories'
 
+it('should render numbers into mask as the user types', () => {
+    const onChange = jest.fn()
+    const { getByLabelText } = render(<TelephoneDemo onChange={onChange} />)
+    const input = getByLabelText(/phone number/i) as HTMLInputElement
 
-describe('Given an input with a telephone mask', () => {
-    let input: HTMLInputElement
-    let onChange = jest.fn()
+    userEvent.click(input) // focus input
 
-    beforeEach(() => {
-        const { getByLabelText } = render(<TelephoneDemo onChange={onChange} />)
-        input = getByLabelText(/phone number/i) as HTMLInputElement
-    })
+    // initial state
+    expect(input).toHaveAttribute('placeholder', '(___)-___-____')
+    expect(input.selectionStart).toBe(0) // cursor at start
 
-    it('should render placeholder with mask', () => {
-        expect(input).toHaveAttribute('placeholder', '(___)-___-____')
-    })
+    // enter a few numbers (should ignore non-numbers)
+    userEvent.type(input, '613abc')
 
-    describe('When user types numbers into the mask', () => {
-        beforeEach(() => {
-            userEvent.type(input, '613')
-        })
+    expect(input).toHaveValue('(613)-___-____')
+    expect(onChange).toHaveBeenCalledWith('613')
+    expect(input.selectionStart).toBe('(613)-___-____'.indexOf('_'))
 
-        it('should render the numbers and the mask in the input', () => {
-            expect(input).toHaveValue('(613)-___-____')
-        })
+    // input the rest of the numbers
+    userEvent.type(input, '8888888')
 
-        it('should call onChange with raw value', () => {
-            expect(onChange).toHaveBeenCalledWith('613')
-        })
+    expect(input).toHaveValue('(613)-888-8888')
+    expect(onChange).toHaveBeenCalledWith('6138888888')
+    expect(input.selectionStart).toBe('(613)-888-8888'.length)
 
-        it('should place cursor at beginning of next placeholder', () => {
-            expect(input.selectionStart).toBe('(613)-___-____'.indexOf('_'))
-        })
+    // backspace
+    userEvent.type(input, '{backspace}')
 
-        describe('When user enters the remaining numbers into the mask', () => {
-            beforeEach(() => {
-                userEvent.type(input, '8888888')
-            })
-
-            it('should render the numbers into the mask in the input', () => {
-                expect(input).toHaveValue('(613)-888-8888')
-            })
-
-            it('should call onChange with raw value', () => {
-                expect(onChange).toHaveBeenCalledWith('6138888888')
-            })
-
-            it('should place cursor at end of input', () => {
-                expect(input.selectionStart).toBe('(613)-888-8888'.length)
-            })
-
-            describe('When the user hits backspace', () => {
-                beforeEach(() => {
-                    userEvent.type(input, '{backspace}')
-                })
-
-                it('should render the mask without the last character', () => {
-                    expect(input).toHaveValue('(613)-888-888_')
-                })
-
-                it('should call onChange with raw value', () => {
-                    expect(onChange).toHaveBeenCalledWith('613888888')
-                })
-
-                it('should place cursor at beginning of next placeholder', () => {
-                    expect(input.selectionStart).toBe('(613)-888-888_'.indexOf('_'))
-                })
-            })
-        })
-    })
+    expect(input).toHaveValue('(613)-888-888_')
+    expect(onChange).toHaveBeenCalledWith('613888888')
+    expect(input.selectionStart).toBe('(613)-888-888_'.indexOf('_'))
 })

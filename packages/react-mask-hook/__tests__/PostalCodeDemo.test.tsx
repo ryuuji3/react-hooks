@@ -4,71 +4,35 @@ import userEvent from '@testing-library/user-event'
 
 import { PostalCodeDemo } from '../.storybook/stories/Demo.stories'
 
+it('should render postal code into mask as the user types', () => {
+    const onChange = jest.fn()
+    const { getByLabelText } = render(<PostalCodeDemo onChange={onChange} />)
+    const input = getByLabelText(/postal code/i) as HTMLInputElement
 
-describe('Given an input with a telephone mask', () => {
-    let input: HTMLInputElement
-    let onChange = jest.fn()
+    userEvent.click(input) // focus input
 
-    beforeEach(() => {
-        const { getByLabelText } = render(<PostalCodeDemo onChange={onChange} />)
-        input = getByLabelText(/postal code/i) as HTMLInputElement
-    })
+    // initial state
+    expect(input).toHaveAttribute('placeholder', '___ ___')
+    expect(input.selectionStart).toBe(0) // cursor at start
 
-    it('should render placeholder with mask', () => {
-        expect(input).toHaveAttribute('placeholder', '___ ___')
-    })
+    // enter part of the postal code (should ignore characters that dont fit)
+    userEvent.type(input, 'A1AB')
 
-    describe('When user types numbers and letters into the mask', () => {
-        beforeEach(() => {
-            userEvent.type(input, 'A1A')
-        })
+    expect(input).toHaveDisplayValue('A1A ___')
+    expect(onChange).toHaveBeenCalledWith('A1A')
+    expect(input.selectionStart).toBe('A1A ___'.indexOf('_'))
 
-        it('should render the numbers and letters and the mask in the input', () => {
-            expect(input).toHaveDisplayValue('A1A ___')
-        })
+    // input the rest of the postal code
+    userEvent.type(input, 'A1A 1A1')
 
-        it('should call onChange with raw value', () => {
-            expect(onChange).toHaveBeenCalledWith('A1A')
-        })
+    expect(input).toHaveDisplayValue('A1A 1A1')
+    expect(onChange).toHaveBeenCalledWith('A1A1A')
+    expect(input.selectionStart).toBe('A1A 1A1'.length)
 
-        it.skip('should place cursor at beginning of next placeholder', () => {
-            expect(input.selectionStart).toBe('A1A ___'.indexOf('_'))
-        })
+    // backspace
+    userEvent.type(input, '{backspace}')
 
-        describe('When user enters the remaining numbers and letters into the mask', () => {
-            beforeEach(() => {
-                userEvent.type(input, 'A1A 1A1')
-            })
-
-            it('should render the numbers and letters into the mask in the input', () => {
-                expect(input).toHaveDisplayValue('A1A 1A1')
-            })
-
-            it('should call onChange with raw value', () => {
-                expect(onChange).toHaveBeenCalledWith('A1A1A1')
-            })
-
-            it('should place cursor at end of input', () => {
-                expect(input.selectionStart).toBe('A1A 1A1'.length)
-            })
-
-            describe('When the user hits backspace', () => {
-                beforeEach(() => {
-                    userEvent.type(input, '{backspace}')
-                })
-
-                it('should render the mask without the last character', () => {
-                    expect(input).toHaveDisplayValue('A1A 1A_')
-                })
-
-                it('should call onChange with raw value', () => {
-                    expect(onChange).toHaveBeenCalledWith('A1A1A')
-                })
-
-                it('should place cursor at beginning of next placeholder', () => {
-                    expect(input.selectionStart).toBe('A1A 1A_'.indexOf('_'))
-                })
-            })
-        })
-    })
+    expect(input).toHaveDisplayValue('A1A 1A_')
+    expect(onChange).toHaveBeenCalledWith('A1A1A')
+    expect(input.selectionStart).toBe('A1A 1A_'.indexOf('_'))
 })

@@ -4,70 +4,35 @@ import userEvent from '@testing-library/user-event'
 
 import { DateDemo } from '../.storybook/stories/Demo.stories'
 
-describe('Given an input with a date mask', () => {
-    let onChange = jest.fn()
-    let input: HTMLInputElement
+it('should render numbers into mask as the user types', () => {
+    const onChange = jest.fn()
+    const { getByLabelText } = render(<DateDemo onChange={onChange} />)
+    const input = getByLabelText(/date/i) as HTMLInputElement
 
-    beforeEach(() => {
-        const { getByLabelText } = render(<DateDemo onChange={onChange} />)
-        input = getByLabelText(/date/i) as HTMLInputElement
-    })
+    userEvent.click(input) // focus input
 
-    it('should render placeholder with mask', () => {
-        expect(input).toHaveAttribute('placeholder', 'DD - MM - YYYY')
-    })
+    // initial state
+    expect(input).toHaveAttribute('placeholder', 'DD - MM - YYYY')
+    expect(input.selectionStart).toBe('DD - MM - YYYY'.indexOf('D'))
 
-    describe('When user types numbers into the mask', () => {
-        beforeEach(() => {
-            userEvent.type(input, '28')
-        })
+    // enter a few numbers (should ignore non-numbers)
+    userEvent.type(input, '28ab')
 
-        it('should render the numbers and the mask in the input', () => {
-            expect(input).toHaveValue('28 - MM - YYYY')
-        })
+    expect(input).toHaveValue('28 - MM - YYYY')
+    expect(onChange).toHaveBeenCalledWith('28')
+    expect(input.selectionStart).toBe('28 - MM - YYYY'.indexOf('M'))
 
-        it('should call onChange with raw value', () => {
-            expect(onChange).toHaveBeenCalledWith('28')
-        })
+    // input the rest of the numbers
+    userEvent.type(input, '101995')
 
-        it('should place cursor at beginning of next placeholder', () => {
-            expect(input.selectionStart).toBe('28 - MM - YYYY'.indexOf('M'))
-        })
+    expect(input).toHaveValue('28 - 10 - 1995')
+    expect(onChange).toHaveBeenCalledWith('28101995')
+    expect(input.selectionStart).toBe('28 - 10 - 1995'.length)
 
-        describe('When user enters the remaining numbers into the mask', () => {
-            beforeEach(() => {
-                userEvent.type(input, '101995')
-            })
+    // backspace
+    userEvent.type(input, '{backspace}')
 
-            it('should render the numbers into the mask in the input', () => {
-                expect(input).toHaveValue('28 - 10 - 1995')
-            })
-
-            it('should call onChange with raw value', () => {
-                expect(onChange).toHaveBeenCalledWith('28101995')
-            })
-
-            it('should place cursor at end of input', () => {
-                expect(input.selectionStart).toBe('28 - 10 - 1995'.length)
-            })
-
-            describe('When the user hits backspace', () => {
-                beforeEach(() => {
-                    userEvent.type(input, '{backspace}')
-                })
-
-                it('should render the mask without the last character', () => {
-                    expect(input).toHaveValue('28 - 10 - 199Y')
-                })
-
-                it('should call onChange with raw value', () => {
-                    expect(onChange).toHaveBeenCalledWith('2810199')
-                })
-
-                it('should place cursor at beginning of next placeholder', () => {
-                    expect(input.selectionStart).toBe('28 - 10 - 199Y'.indexOf('Y'))
-                })
-            })
-        })
-    })
+    expect(input).toHaveValue('28 - 10 - 199Y')
+    expect(onChange).toHaveBeenCalledWith('2810199')
+    expect(input.selectionStart).toBe('28 - 10 - 199Y'.indexOf('Y'))
 })

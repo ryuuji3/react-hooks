@@ -25,7 +25,7 @@
 			"**/lib": true,
 		},
 		"npm.packageManager": "yarn",
-		"jest.pathToJest": "yarn test --",
+		"jest.jestCommandLine": "yarn test",
 	},
 	"extensions": {
 		"recommendations": [

@@ -2,7 +2,7 @@ import { KeyboardEvent, ChangeEvent, FocusEvent, useMemo, } from 'react'
 
 import useCallbackAfterRender from '@ryuuji3/use-callback-after-render'
 import getMaskedValue from '../functions/getMaskedValue'
-import getNextCursorPosition from '../functions/getNextCursorPosition'
+import getPositionOfNextMaskCharacter from '../functions/getNextCursorPosition'
 
 import useDebugMode from './useDebugMode'
 import parseMask from '../functions/convertStringMaskToRegexp'
@@ -33,17 +33,14 @@ export function useMask({
         maskedValue,
     })
     
-    const lastCursorPosition = getNextCursorPosition(value, mask, log)
+    const nextCursorPosition = getPositionOfNextMaskCharacter(value, mask, log)
     const scheduleAfterRender = useCallbackAfterRender()
 
     // Using an onChange instead of keyboard events because mobile devices don't fire key events
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
         let newValue = getNewValue({
             inputValue: target.value,
-            maskedValue,
-            oldValue: value,
             mask,
-            lastCursorPosition,
             log,
         })
 
@@ -51,26 +48,26 @@ export function useMask({
 
         // onChange is asynchronous so update cursor after it re-renders
         scheduleAfterRender(() => {
-            setCursorPositionForElement(target, getNextCursorPosition(newValue, mask, log))
+            setCursorPositionForElement(target, getPositionOfNextMaskCharacter(newValue, mask, log))
         })
     }
 
     // For some reason, tests fail without this...
     // TODO: Figure out why this is necessary
     function onKeyUp({ target }: KeyboardEvent<HTMLInputElement>) {
-        setCursorPositionForElement(target as HTMLInputElement, lastCursorPosition)
+        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition)
     }
 
     function onKeyDown({ target}: KeyboardEvent<HTMLInputElement>) {
         // make sure cursor is positioned correctly before input happens
         // or else the character might not be in the right position
-        setCursorPositionForElement(target as HTMLInputElement, lastCursorPosition)
+        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition)
     }
 
     function onFocus({ target }: FocusEvent<HTMLInputElement>) {
         // Work around in chrome to make sure focus sets cursor position
         requestAnimationFrame(() => {
-            setCursorPositionForElement(target as HTMLInputElement, getNextCursorPosition(target.value, mask, log))
+            setCursorPositionForElement(target as HTMLInputElement, getPositionOfNextMaskCharacter(target.value, mask, log))
         })
     }
 

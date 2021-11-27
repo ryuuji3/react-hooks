@@ -26,6 +26,7 @@
 		},
 		"npm.packageManager": "yarn",
 		"jest.jestCommandLine": "yarn test",
+		"jest.rootPath": "."
 	},
 	"extensions": {
 		"recommendations": [

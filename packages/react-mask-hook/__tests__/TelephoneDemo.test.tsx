@@ -30,11 +30,12 @@ it('should render numbers into mask as the user types', () => {
     expect(input.selectionStart).toBe('(613)-888-8888'.length)
 
     // backspace
-    userEvent.type(input, '{backspace}')
+    // regression: make sure to delete a mask character when backspacing
+    userEvent.type(input, '{backspace}{backspace}{backspace}{backspace}{backspace}')
 
-    expect(input).toHaveValue('(613)-888-888_')
-    expect(onChange).toHaveBeenCalledWith('613888888')
-    expect(input.selectionStart).toBe('(613)-888-888_'.indexOf('_'))
+    expect(input).toHaveValue('(613)-88_-____')
+    expect(onChange).toHaveBeenCalledWith('61388')
+    expect(input.selectionStart).toBe('(613)-88_-____'.indexOf('_'))
 })
 
 it('should allow user to copy and paste phone number into input', () => {

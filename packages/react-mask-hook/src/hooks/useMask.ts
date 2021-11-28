@@ -40,6 +40,8 @@ export function useMask({
     // Using an onChange instead of keyboard events because mobile devices don't fire key events
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
         let newValue = getNewValue({
+            oldValue: value,
+            maskedValue,
             inputValue: target.value,
             mask,
             log,
@@ -79,6 +81,7 @@ export function useMask({
 
         let newValue = getNewValue({
             inputValue: text,
+            maskedValue,
             mask,
             log,
         })

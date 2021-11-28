@@ -13,10 +13,12 @@ import getPositionOfNextMaskCharacter from "./getPositionOfNextMaskCharacter";
  */
 function getNewValue({
     inputValue,
+    oldValue,
+    maskedValue,
     mask,
     log,
 }: GetNewValueParams): string {
-    return inputValue
+    const newValue = inputValue
         .split('')
         .reduce(( validCharacters, inputCharacter, index ) => {
             const insertedCharacters = validCharacters.slice(0, index)
@@ -29,10 +31,27 @@ function getNewValue({
 
             return validCharacters
         }, '')
+
+    // inputValue is not masked so just return it
+    if (oldValue === '') {
+        return newValue
+    }
+
+    // sometimes the calculated new value is the same as the old value, but we know they deleted a character
+    // if the typed value is shorter than the masked value (eg. deleted a masked character)
+    if (oldValue === newValue && inputValue.length < maskedValue.length) {
+        const newLength = newValue.length - (maskedValue.length - inputValue.length)
+
+        return newValue.slice(0, newLength)
+    }
+
+    return newValue
 }
 
 interface GetNewValueParams {
     inputValue: string
+    oldValue?: string
+    maskedValue: string
     mask: Mask
     log: Logger
 }

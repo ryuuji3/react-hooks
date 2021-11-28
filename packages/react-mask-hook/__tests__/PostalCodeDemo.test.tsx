@@ -30,11 +30,12 @@ it('should render postal code into mask as the user types', () => {
     expect(input.selectionStart).toBe('A1A 1A1'.length)
 
     // backspace
-    userEvent.type(input, '{backspace}')
+    // regression: make sure to delete a mask character when backspacing
+    userEvent.type(input, '{backspace}{backspace}{backspace}{backspace}')
 
-    expect(input).toHaveDisplayValue('A1A 1A_')
-    expect(onChange).toHaveBeenCalledWith('A1A1A')
-    expect(input.selectionStart).toBe('A1A 1A_'.indexOf('_'))
+    expect(input).toHaveDisplayValue('A1_ ___')
+    expect(onChange).toHaveBeenCalledWith('A1')
+    expect(input.selectionStart).toBe('A1_ ___'.indexOf('_'))
 })
 
 it('should allow user to copy and paste postal code into input', () => {

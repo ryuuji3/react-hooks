@@ -16,7 +16,6 @@ export const DateDemo = ({ onChange }: { onChange: (value: string) => void}) => 
         ]}
         placeholder="DD - MM - YYYY"
         onChange={onChange}
-        debug
     />
 )
 
@@ -28,7 +27,6 @@ export const TelephoneDemo = ({ onChange }: { onChange: (value: string) => void}
         ]}
         placeholder="_"
         onChange={onChange}
-        debug
     />
 )
 
@@ -40,6 +38,5 @@ export const PostalCodeDemo = ({ onChange }: { onChange: (value: string) => void
         ]}
         placeholder="_"
         onChange={onChange}
-        debug
     />
 )

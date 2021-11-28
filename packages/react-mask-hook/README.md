@@ -89,7 +89,7 @@ function DateDemo() {
 ### API
 
 ```js
-const { value, placeholder, onChange, onKeyUp, onKeyDown, onFocus } = useMask({ value, onChange, mask, placeholder })
+const { value, placeholder, onChange, onKeyUp, onKeyDown, onFocus, onPaste } = useMask({ value, onChange, mask, placeholder })
 ```
 
 Arguments:

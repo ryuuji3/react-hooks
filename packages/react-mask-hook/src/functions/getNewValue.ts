@@ -1,6 +1,6 @@
 import { Logger } from "../hooks/useDebugMode";
 import { Mask } from "../hooks/useMask";
-import getPositionOfNextMaskCharacter from "./getNextCursorPosition";
+import getPositionOfNextMaskCharacter from "./getPositionOfNextMaskCharacter";
 
 /**
  * Calculate the new value using existing value, new value, mask and cursor position.

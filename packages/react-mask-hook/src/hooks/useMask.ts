@@ -1,13 +1,14 @@
-import { KeyboardEvent, ChangeEvent, FocusEvent, useMemo, } from 'react'
+import { KeyboardEvent, ChangeEvent, ClipboardEvent, FocusEvent, useMemo } from 'react'
 
 import useCallbackAfterRender from '@ryuuji3/use-callback-after-render'
 import getMaskedValue from '../functions/getMaskedValue'
-import getPositionOfNextMaskCharacter from '../functions/getNextCursorPosition'
+import getPositionOfNextMaskCharacter from '../functions/getPositionOfNextMaskCharacter'
 
 import useDebugMode from './useDebugMode'
 import parseMask from '../functions/convertStringMaskToRegexp'
 import getPlaceholderFromMask from '../functions/getPlaceholderFromMask'
 import getNewValue from '../functions/getNewValue'
+import fitInputValueIntoMask from '../functions/fitInputValueIntoMask'
 
 /**
  * 
@@ -71,6 +72,26 @@ export function useMask({
         })
     }
 
+    function onPaste({ clipboardData, target }: ClipboardEvent) {
+        const text = clipboardData?.getData('Text') ?? ''
+
+        log(`Pasted text: ${text}`)
+
+        let newValue = getNewValue({
+            inputValue: text,
+            mask,
+            log,
+        })
+
+        log(`New value from clipboard: ${newValue}`)
+
+        onChange(newValue)
+
+        scheduleAfterRender(() => {
+            setCursorPositionForElement(target as HTMLInputElement, getPositionOfNextMaskCharacter(newValue, mask, log))
+        })
+    }
+
     return {
         'data-value': value.length ? value: undefined,
         value: value.length ? maskedValue : '',
@@ -80,6 +101,7 @@ export function useMask({
         onKeyDown,
         onKeyUp,
         onFocus,
+        onPaste,
     }
 }
 
@@ -105,6 +127,7 @@ interface InputProps {
     onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
     onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void
     onFocus: (e: FocusEvent<HTMLInputElement>) => void
+    onPaste: (e: ClipboardEvent<HTMLInputElement>) => void
 }
 
 type Mask = Array<string | RegExp>

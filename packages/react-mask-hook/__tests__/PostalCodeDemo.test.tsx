@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, } from '@testing-library/react'
+import { render, createEvent, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { PostalCodeDemo } from '../.storybook/stories/Demo.stories'
@@ -35,4 +35,25 @@ it('should render postal code into mask as the user types', () => {
     expect(input).toHaveDisplayValue('A1A 1A_')
     expect(onChange).toHaveBeenCalledWith('A1A1A')
     expect(input.selectionStart).toBe('A1A 1A_'.indexOf('_'))
+})
+
+it('should allow user to copy and paste postal code into input', () => {
+    const onChange = jest.fn()
+    const { getByLabelText } = render(<PostalCodeDemo onChange={onChange} />)
+    const input = getByLabelText(/postal code/i) as HTMLInputElement
+
+    // Example: un-formatted postal code should be parsed correctly
+    const unformattedPostalCode = 'A1A1A1'
+
+    // Bypass jsdom not having clipboard support
+    const paste = createEvent.paste(input, {
+        clipboardData: {
+            getData: () => unformattedPostalCode,
+        }
+    })
+    fireEvent(input, paste)
+
+    expect(input).toHaveValue('A1A 1A1')
+    expect(onChange).toHaveBeenCalledWith('A1A1A1')
+    expect(input.selectionStart).toBe('A1A 1A1'.length)
 })

@@ -44,7 +44,7 @@ it('should allow user to copy and paste postal code into input', () => {
     const input = getByLabelText(/postal code/i) as HTMLInputElement
 
     // Example: un-formatted postal code should be parsed correctly
-    const unformattedPostalCode = 'A1A1A1'
+    const unformattedPostalCode = 'A1A'
 
     // Bypass jsdom not having clipboard support
     const paste = createEvent.paste(input, {
@@ -54,7 +54,7 @@ it('should allow user to copy and paste postal code into input', () => {
     })
     fireEvent(input, paste)
 
-    expect(input).toHaveValue('A1A 1A1')
-    expect(onChange).toHaveBeenCalledWith('A1A1A1')
-    expect(input.selectionStart).toBe('A1A 1A1'.length)
+    expect(input).toHaveValue('A1A ___')
+    expect(onChange).toHaveBeenCalledWith('A1A')
+    expect(input.selectionStart).toBe('A1A ___'.indexOf('_'))
 })

@@ -44,7 +44,8 @@ it('should allow user to copy and paste phone number into input', () => {
     const input = getByLabelText(/phone number/i) as HTMLInputElement
 
     // Example: pre-formatted phone number should be parsed correctly
-    const formattedPhoneNumber = '613-888-8888'
+    // regression: supply incomplete value
+    const formattedPhoneNumber = '613-888'
 
     // Bypass jsdom not having clipboard support
     const paste = createEvent.paste(input, {
@@ -54,7 +55,7 @@ it('should allow user to copy and paste phone number into input', () => {
     })
     fireEvent(input, paste)
 
-    expect(input).toHaveValue('(613)-888-8888')
-    expect(onChange).toHaveBeenCalledWith('6138888888')
-    expect(input.selectionStart).toBe('(613)-888-8888'.length)
+    expect(input).toHaveValue('(613)-888-____')
+    expect(onChange).toHaveBeenCalledWith('613888')
+    expect(input.selectionStart).toBe('(613)-888-____'.indexOf('_'))
 })

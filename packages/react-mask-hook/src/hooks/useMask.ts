@@ -4,11 +4,10 @@ import useCallbackAfterRender from '@ryuuji3/use-callback-after-render'
 import getMaskedValue from '../functions/getMaskedValue'
 import getPositionOfNextMaskCharacter from '../functions/getPositionOfNextMaskCharacter'
 
-import useDebugMode from './useDebugMode'
+import useDebugMode, { Logger } from './useDebugMode'
 import parseMask from '../functions/convertStringMaskToRegexp'
 import getPlaceholderFromMask from '../functions/getPlaceholderFromMask'
 import getNewValue from '../functions/getNewValue'
-import fitInputValueIntoMask from '../functions/fitInputValueIntoMask'
 
 /**
  * 
@@ -34,11 +33,13 @@ export function useMask({
         maskedValue,
     })
     
-    const nextCursorPosition = getPositionOfNextMaskCharacter(value, mask, log)
+    const nextCursorPosition = getPositionOfNextMaskCharacter(value, mask)
     const scheduleAfterRender = useCallbackAfterRender()
 
     // Using an onChange instead of keyboard events because mobile devices don't fire key events
     function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
+        log(`handle change fired: "${target.value}"`)
+
         let newValue = getNewValue({
             oldValue: value,
             maskedValue,
@@ -51,31 +52,33 @@ export function useMask({
 
         // onChange is asynchronous so update cursor after it re-renders
         scheduleAfterRender(() => {
-            setCursorPositionForElement(target, getPositionOfNextMaskCharacter(newValue, mask, log))
+            setCursorPositionForElement(target, getPositionOfNextMaskCharacter(newValue, mask), log)
         })
     }
 
     // For some reason, tests fail without this...
     // TODO: Figure out why this is necessary
     function onKeyUp({ target }: KeyboardEvent<HTMLInputElement>) {
-        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition)
+        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition, log)
     }
 
     function onKeyDown({ target}: KeyboardEvent<HTMLInputElement>) {
         // make sure cursor is positioned correctly before input happens
         // or else the character might not be in the right position
-        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition)
+        setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition, log)
     }
 
     function onFocus({ target }: FocusEvent<HTMLInputElement>) {
         // Work around in chrome to make sure focus sets cursor position
         requestAnimationFrame(() => {
-            setCursorPositionForElement(target as HTMLInputElement, getPositionOfNextMaskCharacter(target.value, mask, log))
+            setCursorPositionForElement(target as HTMLInputElement, getPositionOfNextMaskCharacter(target.value, mask), log)
         })
     }
 
-    function onPaste({ clipboardData, target }: ClipboardEvent) {
-        const text = clipboardData?.getData('Text') ?? ''
+    function onPaste(event: ClipboardEvent) {
+        event.preventDefault() // we'll handle paste ourselves
+
+        const text = event.clipboardData?.getData('Text') ?? ''
 
         log(`Pasted text: ${text}`)
 
@@ -91,7 +94,7 @@ export function useMask({
         onChange(newValue)
 
         scheduleAfterRender(() => {
-            setCursorPositionForElement(target as HTMLInputElement, getPositionOfNextMaskCharacter(newValue, mask, log))
+            setCursorPositionForElement(event.target as HTMLInputElement, getPositionOfNextMaskCharacter(newValue, mask), log)
         })
     }
 
@@ -140,7 +143,9 @@ type Mask = Array<string | RegExp>
  * @param element 
  * @param cursorPosition 
  */
-function setCursorPositionForElement(element: HTMLInputElement, cursorPosition: number): void {
+function setCursorPositionForElement(element: HTMLInputElement, cursorPosition: number, log: Logger): void {
+    log(`Cursor position positioned at ${cursorPosition}`)
+
     element?.setSelectionRange(cursorPosition, cursorPosition, 'forward')
 }
 

@@ -44,7 +44,8 @@ it('should allow user to copy and paste unformatted phone number into input', ()
     const input = getByLabelText(/date/i) as HTMLInputElement
 
     // Example: un-formatted postal code should be parsed correctly
-    const formattedDate = '28/10/1995'
+    // regression: partial date 
+    const formattedDate = '28/10'
 
     // Bypass jsdom not having clipboard support
     const paste = createEvent.paste(input, {
@@ -54,7 +55,7 @@ it('should allow user to copy and paste unformatted phone number into input', ()
     })
     fireEvent(input, paste)
 
-    expect(input).toHaveValue('28 - 10 - 1995')
-    expect(onChange).toHaveBeenCalledWith('28101995')
-    expect(input.selectionStart).toBe('28 - 10 - 1995'.length)
+    expect(input).toHaveValue('28 - 10 - YYYY')
+    expect(onChange).toHaveBeenCalledWith('2810')
+    expect(input.selectionStart).toBe('28 - 10 - YYYY'.indexOf('Y'))
 })

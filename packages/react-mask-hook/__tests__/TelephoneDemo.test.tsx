@@ -2,6 +2,7 @@ import React from 'react'
 import { render, createEvent, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
+import refocus from './utilities/refocus'
 import { TelephoneDemo } from '../.storybook/stories/Demo.stories'
 
 it('should render numbers into mask as the user types', () => {
@@ -58,4 +59,26 @@ it('should allow user to copy and paste phone number into input', () => {
     expect(input).toHaveValue('(613)-888-____')
     expect(onChange).toHaveBeenCalledWith('613888')
     expect(input.selectionStart).toBe('(613)-888-____'.indexOf('_'))
+})
+
+it('should position cursor on next mask placeholder when focused', async () => {
+    const { getByLabelText } = render(<TelephoneDemo onChange={jest.fn()} />)
+    const input = getByLabelText(/phone number/i) as HTMLInputElement
+
+    await refocus(input)
+
+    expect(input.selectionStart).toBe(0) // special case: we dont show masked value until they type
+
+    userEvent.type(input, '613')
+
+    await refocus(input)
+
+    expect(input.selectionStart).toBe('(613)-___-____'.indexOf('_')) // cursor at mask placeholder
+
+    // entire complete value
+    userEvent.type(input, '8888888')
+
+    await refocus(input)
+
+    expect(input.selectionStart).toBe('(613)-888-8888'.length) // cursor at end
 })

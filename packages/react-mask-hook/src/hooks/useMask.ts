@@ -59,18 +59,22 @@ export function useMask({
     // For some reason, tests fail without this...
     // TODO: Figure out why this is necessary
     function onKeyUp({ target }: KeyboardEvent<HTMLInputElement>) {
+        log('onKeyUp fired')
+
         setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition, log)
     }
 
     function onKeyDown({ target}: KeyboardEvent<HTMLInputElement>) {
+        log('onKeyDown fired')
         // make sure cursor is positioned correctly before input happens
         // or else the character might not be in the right position
         setCursorPositionForElement(target as HTMLInputElement, nextCursorPosition, log)
     }
 
     function onFocus({ target }: FocusEvent<HTMLInputElement>) {
+        log('onFocus fired')
         // Work around in chrome to make sure focus sets cursor position
-        requestAnimationFrame(() => {
+        scheduleAfterRender(() => {
             setCursorPositionForElement(target as HTMLInputElement, getPositionOfNextMaskCharacter(target.value, mask), log)
         })
     }

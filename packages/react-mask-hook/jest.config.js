@@ -7,4 +7,8 @@ module.exports = {
     setupFilesAfterEnv: [
         './jest.setup.ts',
     ],
+    testPathIgnorePatterns: [
+        '/node_modules/',
+        '<rootDir>/__tests__/utilities/',
+    ],
 }

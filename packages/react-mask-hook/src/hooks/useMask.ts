@@ -20,6 +20,7 @@ export function useMask({
     value = '',
     onChange,
     debug = false,
+    copyFormatted,
     ...props
 }: MaskProps): InputProps {
     const mask = useMemo(() => parseMask(props.mask), [ props.mask ])
@@ -79,6 +80,17 @@ export function useMask({
         })
     }
 
+    function onCopy(event: ClipboardEvent) {
+        event.preventDefault() // we'll handle paste ourselves
+
+        // Allow develoeprs to choose their desired copy behavior
+        const clipboardText = copyFormatted
+            ? maskedValue
+            : value
+
+        event.clipboardData.setData('Text', clipboardText)
+    }
+
     function onPaste(event: ClipboardEvent) {
         event.preventDefault() // we'll handle paste ourselves
 
@@ -111,6 +123,7 @@ export function useMask({
         onKeyDown,
         onKeyUp,
         onFocus,
+        onCopy,
         onPaste,
     }
 }
@@ -123,6 +136,7 @@ interface MaskProps {
     onChange: (value: string) => void
     mask: string | Mask
     placeholder: string
+    copyFormatted?: boolean
     debug?: boolean
 }
 
@@ -137,6 +151,7 @@ interface InputProps {
     onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
     onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void
     onFocus: (e: FocusEvent<HTMLInputElement>) => void
+    onCopy: (e: ClipboardEvent<HTMLInputElement>) => void
     onPaste: (e: ClipboardEvent<HTMLInputElement>) => void
 }
 

@@ -4,11 +4,10 @@ import userEvent from '@testing-library/user-event'
 
 import refocus from './utilities/refocus'
 import { TelephoneDemo } from '../.storybook/stories/Demo.stories'
+import { copyText, pasteText } from './utilities/clipboard'
 
 it('should render numbers into mask as the user types', () => {
-    const onChange = jest.fn()
-    const { getByLabelText } = render(<TelephoneDemo onChange={onChange} />)
-    const input = getByLabelText(/phone number/i) as HTMLInputElement
+    const { onChange, input } = setup()
 
     userEvent.click(input) // focus input
 
@@ -40,21 +39,11 @@ it('should render numbers into mask as the user types', () => {
 })
 
 it('should allow user to copy and paste phone number into input', () => {
-    const onChange = jest.fn()
-    const { getByLabelText } = render(<TelephoneDemo onChange={onChange} />)
-    const input = getByLabelText(/phone number/i) as HTMLInputElement
+    const { onChange, input } = setup()
 
     // Example: pre-formatted phone number should be parsed correctly
     // regression: supply incomplete value
-    const formattedPhoneNumber = '613-888'
-
-    // Bypass jsdom not having clipboard support
-    const paste = createEvent.paste(input, {
-        clipboardData: {
-            getData: () => formattedPhoneNumber,
-        }
-    })
-    fireEvent(input, paste)
+    pasteText(input, '613-888')
 
     expect(input).toHaveValue('(613)-888-____')
     expect(onChange).toHaveBeenCalledWith('613888')
@@ -62,9 +51,7 @@ it('should allow user to copy and paste phone number into input', () => {
 })
 
 it('should position cursor on next mask placeholder when focused', async () => {
-    const { getByLabelText } = render(<TelephoneDemo onChange={jest.fn()} />)
-    const input = getByLabelText(/phone number/i) as HTMLInputElement
-
+    const { input } = setup()
     await refocus(input)
 
     expect(input.selectionStart).toBe(0) // special case: we dont show masked value until they type
@@ -82,3 +69,20 @@ it('should position cursor on next mask placeholder when focused', async () => {
 
     expect(input.selectionStart).toBe('(613)-888-8888'.length) // cursor at end
 })
+
+it.skip('should add formatted value to users clipboard', () => {
+    const { input } = setup()
+
+    copyText(input)
+
+    // not sure how to confirm what enters users clipboard 🤔
+})
+
+function setup() {
+    const onChange = jest.fn()
+
+    const { getByLabelText } = render(<TelephoneDemo onChange={onChange} />)
+    const input = getByLabelText(/phone number/i) as HTMLInputElement
+
+    return { input, onChange }
+}

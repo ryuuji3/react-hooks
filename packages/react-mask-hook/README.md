@@ -89,7 +89,7 @@ function DateDemo() {
 ### API
 
 ```js
-const { value, placeholder, onChange, onKeyUp, onKeyDown, onFocus, onPaste } = useMask({ value, onChange, mask, placeholder })
+const { value, placeholder, onChange, onKeyUp, onKeyDown, onFocus, onPaste } = useMask({ value, onChange, mask, placeholder, copyFormatted })
 ```
 
 Arguments:
@@ -100,5 +100,6 @@ Arguments:
 | `onChange` | is the callback used to update value. you must supply local state or deferred state.
 | `mask` | is an array of regular expressions and formatting characters. 
 | `placeholder` | The third argument is a single character to use as the displayed placeholder instead of the regular expression, or it can be an entire string that matches the mask but with different characters are the placeholder. Your displayed mask must have the same length as the mask. |
+| `copyFormatted` | Upon copying input, will allow you to choose between having the formatted or un-formatted value be copied. |
 
 You may opt-out of placeholder, but the other properties returned by `useMask` are required and should be bound to the input in order for the masking to function as expected.

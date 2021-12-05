@@ -3,11 +3,10 @@ import { render, createEvent, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { PostalCodeDemo } from '../.storybook/stories/Demo.stories'
+import { copyText, pasteText } from './utilities/clipboard'
 
 it('should render postal code into mask as the user types', () => {
-    const onChange = jest.fn()
-    const { getByLabelText } = render(<PostalCodeDemo onChange={onChange} />)
-    const input = getByLabelText(/postal code/i) as HTMLInputElement
+    const { input, onChange } = setup()
 
     userEvent.click(input) // focus input
 
@@ -38,23 +37,30 @@ it('should render postal code into mask as the user types', () => {
     expect(input.selectionStart).toBe('A1_ ___'.indexOf('_'))
 })
 
-it('should allow user to copy and paste postal code into input', () => {
-    const onChange = jest.fn()
-    const { getByLabelText } = render(<PostalCodeDemo onChange={onChange} />)
-    const input = getByLabelText(/postal code/i) as HTMLInputElement
+it('should allow user to paste postal code into input', () => {
+    const { input, onChange } = setup()
 
     // Example: un-formatted postal code should be parsed correctly
-    const unformattedPostalCode = 'A1A'
-
-    // Bypass jsdom not having clipboard support
-    const paste = createEvent.paste(input, {
-        clipboardData: {
-            getData: () => unformattedPostalCode,
-        }
-    })
-    fireEvent(input, paste)
+    pasteText(input, 'A1A')
 
     expect(input).toHaveValue('A1A ___')
     expect(onChange).toHaveBeenCalledWith('A1A')
     expect(input.selectionStart).toBe('A1A ___'.indexOf('_'))
 })
+
+it.skip('should add formatted value to users clipboard', () => {
+    const { input } = setup()
+
+    copyText(input)
+
+    // not sure how to confirm what enters users clipboard 🤔
+})
+
+function setup() {
+    const onChange = jest.fn()
+
+    const { getByLabelText } = render(<PostalCodeDemo onChange={onChange} />)
+    const input = getByLabelText(/postal code/i) as HTMLInputElement
+
+    return { input, onChange }
+}
